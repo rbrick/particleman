@@ -2,6 +2,7 @@ package com.eliotlash.molang.ast;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.eliotlash.molang.variables.ExecutionContext;
@@ -23,6 +24,7 @@ class EvaluatorTest extends TestBase {
 
 	@Test
 	void visitAccess() {
+
 	}
 
 	@Test
@@ -34,6 +36,7 @@ class EvaluatorTest extends TestBase {
 
 	@Test
 	void visitCall() {
+		assertEquals(2, eval.visitCall(new Expr.Call(v("math"), "min", List.of(c(2), c(5)))));
 	}
 
 	@Test
@@ -50,7 +53,7 @@ class EvaluatorTest extends TestBase {
 	void visitVariable() {
 		assertEquals(0, eval.visitVariable(new Expr.Variable("query.test")));
 
-		ExecutionContext context = new ExecutionContext();
+		ExecutionContext context = new ExecutionContext(eval);
 		eval.setExecutionContext(context);
 		context.setVariable("q.test", 5);
 		context.setVariable("query.me", 5);
