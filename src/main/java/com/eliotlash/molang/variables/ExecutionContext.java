@@ -27,7 +27,7 @@ public class ExecutionContext {
         });
     }
 
-    public void setQuery(String var, double value) {
+    public void setVariable(String var, double value) {
         RuntimeVariable cachedVariable = getCachedVariable(var);
         variableMap.put(cachedVariable, value);
     }

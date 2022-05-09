@@ -52,9 +52,9 @@ class EvaluatorTest extends TestBase {
 
 		ExecutionContext context = new ExecutionContext();
 		eval.setExecutionContext(context);
-		context.setQuery("q.test", 5);
-		context.setQuery("query.me", 5);
-		context.setQuery("hello", 5);
+		context.setVariable("q.test", 5);
+		context.setVariable("query.me", 5);
+		context.setVariable("hello", 5);
 		assertEquals(5, eval.visitVariable(new Expr.Variable("query.test")));
 		assertEquals(5, eval.visitVariable(new Expr.Variable("q.test")));
 		assertEquals(5, eval.visitVariable(new Expr.Variable("q.me")));
