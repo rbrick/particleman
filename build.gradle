@@ -6,7 +6,6 @@ def buildNumber = System.getenv("GITHUB_RUN_NUMBER") != null ? System.getenv("GI
 version = "SNAPSHOT." + buildNumber
 group = "com.eliotlash.molang"
 def repsyUrl = project.repsyUrl
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
 	mavenCentral()

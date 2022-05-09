@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
+import com.eliotlash.molang.variables.ExecutionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,6 +27,9 @@ class EvaluatorTest extends TestBase {
 
 	@Test
 	void visitAssignment() {
+		Expr.Access acc = access("query", "test");
+
+		assertEquals(5, eval.visitAssignment(new Expr.Assignment(acc, new Expr.Constant(5))));
 	}
 
 	@Test
@@ -40,6 +44,21 @@ class EvaluatorTest extends TestBase {
 	@Test
 	void visitGroup() {
 		assertEquals(20, eval.visitGroup(paren(c(20))));
+	}
+
+	@Test
+	void visitVariable() {
+		assertEquals(0, eval.visitVariable(new Expr.Variable("query.test")));
+
+		ExecutionContext context = new ExecutionContext();
+		eval.setExecutionContext(context);
+		context.setQuery("q.test", 5);
+		context.setQuery("query.me", 5);
+		context.setQuery("hello", 5);
+		assertEquals(5, eval.visitVariable(new Expr.Variable("query.test")));
+		assertEquals(5, eval.visitVariable(new Expr.Variable("q.test")));
+		assertEquals(5, eval.visitVariable(new Expr.Variable("q.me")));
+		assertEquals(5, eval.visitVariable(new Expr.Variable("hello")));
 	}
 
 	@Test

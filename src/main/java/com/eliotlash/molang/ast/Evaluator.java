@@ -1,6 +1,24 @@
 package com.eliotlash.molang.ast;
 
+import com.eliotlash.molang.variables.ExecutionContext;
+import com.eliotlash.molang.variables.RuntimeVariable;
+import com.eliotlash.molang.variables.VariableFlavor;
+
 public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
+
+	private static Evaluator evaluator;
+	private ExecutionContext context = new ExecutionContext();
+
+	public static Evaluator getEvaluator(){
+		if(evaluator == null) {
+			evaluator = new Evaluator();
+		}
+		return evaluator;
+	}
+
+	public void setExecutionContext(ExecutionContext context) {
+		this.context = context;
+	}
 
 	@Override
 	public Void visitExpression(Stmt.Expression stmt) {
@@ -89,7 +107,8 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
 	@Override
 	public Double visitVariable(Expr.Variable expr) {
-		return null;
+		RuntimeVariable runtimeVariable = context.getCachedVariable(expr.name());
+		return context.getVariableMap().getOrDefault(runtimeVariable, 0);
 	}
 
 	private Double evaluate(Expr expr) {
