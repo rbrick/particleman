@@ -5,8 +5,9 @@ import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.functions.Function;
 
 public class Ceil extends Function {
-	public Ceil(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Ceil(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,7 +16,7 @@ public class Ceil extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.ceil(this.evaluateArgument(ctx, 0));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.ceil(this.evaluateArgument(arguments, ctx, 0));
 	}
 }

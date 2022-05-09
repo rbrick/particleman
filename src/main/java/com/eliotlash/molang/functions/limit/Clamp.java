@@ -6,8 +6,8 @@ import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.utils.MathUtils;
 
 public class Clamp extends Function {
-	public Clamp(Expr[] values, String name) throws Exception {
-		super(values, name);
+	public Clamp(String name) {
+		super(name);
 	}
 
 	@Override
@@ -16,7 +16,7 @@ public class Clamp extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return MathUtils.clamp(this.evaluateArgument(ctx, 0), this.evaluateArgument(ctx, 1), this.evaluateArgument(ctx, 2));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return MathUtils.clamp(this.evaluateArgument(arguments, ctx, 0), this.evaluateArgument(arguments, ctx, 1), this.evaluateArgument(arguments, ctx, 2));
 	}
 }

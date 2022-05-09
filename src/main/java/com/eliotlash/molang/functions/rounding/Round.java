@@ -5,8 +5,9 @@ import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
 
 public class Round extends Function {
-	public Round(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Round(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,7 +16,7 @@ public class Round extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.round(this.evaluateArgument(ctx, 0));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.round(this.evaluateArgument(arguments, ctx, 0));
 	}
 }

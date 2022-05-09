@@ -8,8 +8,9 @@ import com.eliotlash.molang.functions.Function;
  * Absolute value function
  */
 public class Abs extends Function {
-	public Abs(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Abs(String name) {
+		super(name);
 	}
 
 	@Override
@@ -18,7 +19,7 @@ public class Abs extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.abs(this.evaluateArgument(ctx, 0));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.abs(this.evaluateArgument(arguments, ctx, 0));
 	}
 }

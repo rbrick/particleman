@@ -5,8 +5,9 @@ import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
 
 public class CosDegrees extends Function {
-	public CosDegrees(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public CosDegrees(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,7 +16,7 @@ public class CosDegrees extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.cos(this.evaluateArgument(ctx, 0) / 180 * Math.PI);
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.cos(this.evaluateArgument(arguments, ctx, 0) / 180 * Math.PI);
 	}
 }

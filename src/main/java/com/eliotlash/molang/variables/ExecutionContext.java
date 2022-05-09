@@ -1,5 +1,6 @@
 package com.eliotlash.molang.variables;
 
+import com.eliotlash.molang.ast.Evaluator;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 
@@ -7,6 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExecutionContext {
+    private Evaluator evaluator;
+
+    public ExecutionContext(Evaluator evaluator) {
+        this.evaluator = evaluator;
+    }
+
+    public Evaluator getEvaluator() {
+        return evaluator;
+    }
+
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
 

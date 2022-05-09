@@ -5,8 +5,9 @@ import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.functions.Function;
 
 public class Min extends Function {
-	public Min(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Min(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,7 +16,7 @@ public class Min extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.min(this.evaluateArgument(ctx, 0), this.evaluateArgument(ctx, 1));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.min(this.evaluateArgument(arguments, ctx, 0), this.evaluateArgument(arguments, ctx, 1));
 	}
 }

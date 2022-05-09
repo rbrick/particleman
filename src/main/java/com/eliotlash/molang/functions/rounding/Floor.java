@@ -5,8 +5,9 @@ import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.functions.Function;
 
 public class Floor extends Function {
-	public Floor(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Floor(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,7 +16,7 @@ public class Floor extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Math.floor(this.evaluateArgument(ctx, 0));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Math.floor(this.evaluateArgument(arguments, ctx, 0));
 	}
 }

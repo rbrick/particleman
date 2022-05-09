@@ -5,8 +5,9 @@ import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
 
 public class Trunc extends Function {
-	public Trunc(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public Trunc(String name) {
+		super(name);
 	}
 
 	@Override
@@ -15,8 +16,8 @@ public class Trunc extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		double value = this.evaluateArgument(ctx, 0);
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		double value = this.evaluateArgument(arguments, ctx, 0);
 
 		return value < 0 ? Math.ceil(value) : Math.floor(value);
 	}

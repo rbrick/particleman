@@ -6,8 +6,9 @@ import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.utils.Interpolations;
 
 public class LerpRotate extends Function {
-	public LerpRotate(Expr[] values, String name) throws Exception {
-		super(values, name);
+
+	public LerpRotate(String name) {
+		super(name);
 	}
 
 	@Override
@@ -16,7 +17,7 @@ public class LerpRotate extends Function {
 	}
 
 	@Override
-	public double evaluate(ExecutionContext ctx) {
-		return Interpolations.lerpYaw(this.evaluateArgument(ctx, 0), this.evaluateArgument(ctx, 1), this.evaluateArgument(ctx, 2));
+	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
+		return Interpolations.lerpYaw(this.evaluateArgument(arguments, ctx, 0), this.evaluateArgument(arguments, ctx, 1), this.evaluateArgument(arguments, ctx, 2));
 	}
 }

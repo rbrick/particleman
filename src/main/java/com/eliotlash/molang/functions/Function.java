@@ -1,62 +1,45 @@
 package com.eliotlash.molang.functions;
 
-import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
+import com.eliotlash.molang.variables.ExecutionContext;
 
 public abstract class Function {
-	protected Expr[] arguments;
-	protected String name;
+    protected String name;
 
-	public Function(Expr[] arguments, String name) throws Exception {
-		if (arguments.length < this.getRequiredArguments()) {
-			String message = String.format("Function '%s' requires at least %s arguments. %s are given!", name, this.getRequiredArguments(), arguments.length);
+    public Function(String name) {
+        this.name = name;
+    }
 
-			throw new Exception(message);
-		}
+    /**
+     * Get name of this function
+     */
+    public String getName() {
+        return this.name;
+    }
 
-		this.arguments = arguments;
-		this.name = name;
-	}
+    /**
+     * Get minimum count of arguments this function needs
+     */
+    public int getRequiredArguments() {
+        return 0;
+    }
 
-	/**
-	 * Get the value of nth argument
-	 */
-	public double evaluateArgument(ExecutionContext ctx, int index) {
-		if (index < 0 || index >= this.arguments.length) {
-			return 0;
-		}
+    public abstract double _evaluate(Expr[] arguments, ExecutionContext ctx);
 
-		return 0;//this.arguments[index].evaluate(ctx);
-	}
+    public double evaluate(Expr[] arguments, ExecutionContext ctx) throws Exception {
+        if (arguments.length < this.getRequiredArguments()) {
+            String message = String.format("Function '%s' requires at least %s arguments. %s are given!", name, this.getRequiredArguments(), arguments.length);
 
-	@Override
-	public String toString() {
-		StringBuilder args = new StringBuilder();
+            throw new Exception(message);
+        }
 
-		for (int i = 0; i < this.arguments.length; i++) {
-			args.append(this.arguments[i].toString());
+        return _evaluate(arguments, ctx);
+    }
 
-			if (i < this.arguments.length - 1) {
-				args.append(", ");
-			}
-		}
-
-		return this.getName() + "(" + args + ")";
-	}
-
-	/**
-	 * Get name of this function
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Get minimum count of arguments this function needs
-	 */
-	public int getRequiredArguments() {
-		return 0;
-	}
-
-	public abstract double evaluate(ExecutionContext ctx);
+    protected double evaluateArgument(Expr[] arguments, ExecutionContext ctx, int index) {
+        if(index < 0 || index - 1 > arguments.length) {
+            return 0;
+        }
+        return ctx.getEvaluator().evaluate(arguments[index]);
+    }
 }
