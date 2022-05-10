@@ -234,7 +234,14 @@ public class Parser {
 		if (match(MINUS)) {
 			return new Expr.Negate(unary());
 		}
-		return access();
+		Expr access = access();
+		if(match(QUESTION)) {
+			Expr left = expression();
+			consume(COLON, "Expected ':' after ternary");
+			Expr right = expression();
+			return new Expr.Ternary(access, left, right);
+		}
+		return access;
 	}
 
 	private Expr access() {
@@ -252,7 +259,8 @@ public class Parser {
 			} else {
 				throw error(dot, "Expect identifier after '.'.");
 			}
-		} else {
+		}
+		else {
 			return expr;
 		}
 	}

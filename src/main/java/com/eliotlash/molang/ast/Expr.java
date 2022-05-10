@@ -157,8 +157,4 @@ public interface Expr {
 		R visitTernary(Ternary expr);
 		R visitVariable(Variable expr);
 	}
-
-	default double get() {
-		return Evaluator.getEvaluator().visit(this);
-	}
 }
