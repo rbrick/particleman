@@ -40,5 +40,4 @@ public class Evaluatable {
         }
         return Evaluator.getGlobalEvaluator().evaluate(expr);
     }
-
 }
