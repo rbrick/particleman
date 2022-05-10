@@ -3,27 +3,27 @@ package com.eliotlash.molang.ast;
 public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt> {
 
 	@Override
-	public Stmt visitExpression(Stmt.Expression stmt) {
+	public Stmt visitExpression(Stmt.Expression stmt, StmtContext ctx) {
 		return new Stmt.Expression(visit(stmt.expr()));
 	}
 
 	@Override
-	public Stmt visitReturn(Stmt.Return stmt) {
+	public Stmt visitReturn(Stmt.Return stmt, StmtContext ctx) {
 		return new Stmt.Return(visit(stmt.value()));
 	}
 
 	@Override
-	public Stmt visitBreak(Stmt.Break stmt) {
+	public Stmt visitBreak(Stmt.Break stmt, StmtContext ctx) {
 		return stmt;
 	}
 
 	@Override
-	public Stmt visitContinue(Stmt.Continue stmt) {
+	public Stmt visitContinue(Stmt.Continue stmt, StmtContext ctx) {
 		return stmt;
 	}
 
 	@Override
-	public Stmt visitLoop(Stmt.Loop stmt) {
+	public Stmt visitLoop(Stmt.Loop stmt, StmtContext ctx) {
 		return new Stmt.Loop(visit(stmt.count()), visit(stmt.expr()));
 	}
 
@@ -44,7 +44,8 @@ public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt>
 
 	@Override
 	public Expr visitBlock(Expr.Block expr) {
-		return new Expr.Block(expr.statements().stream().map(this::visit).toList());
+		StmtContext ctx = new StmtContext();
+		return new Expr.Block(expr.statements().stream().map(stmt -> visit(stmt, ctx)).toList());
 	}
 
 	@Override

@@ -2,9 +2,11 @@ package com.eliotlash.molang.ast;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.eliotlash.molang.Molang;
 import com.eliotlash.molang.variables.ExecutionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,6 +82,45 @@ class EvaluatorTest extends TestBase {
 	void visitTernary() {
 		assertEquals(10, eval.visitTernary(new Expr.Ternary(c(1), c(10), c(30))));
 		assertEquals(30, eval.visitTernary(new Expr.Ternary(c(0), c(10), c(30))));
+	}
+
+	@Test
+	void visitReturn() {
+		//multiplication with return
+		Stmt s1 = parseS("t.x = 5;");
+		Stmt s2 = parseS("t.y = 7;");
+		Stmt s3 = parseS("return t.x * t.y;");
+		assertEquals(35, eval.evaluate(List.of(s1, s2, s3)));
+
+		System.out.println(evaluateMultiline("""
+				v.x = 1;
+				v.y = 1;
+				loop(6, {
+				  t.x = v.x + v.y;
+				  v.x = v.y;
+				  v.y = t.x;
+				});
+				t.x;
+				"""));
+	}
+
+
+	public double evaluateMultiline(String multiline) {
+		return eval.evaluate(Molang.parse(multiline));
+	}
+
+	/**
+	 * Parses the input as an expression.
+	 */
+	Expr parseE(String expr) {
+		return Molang.parseExpression(expr);
+	}
+
+	/**
+	 * Parses the input as a statement.
+	 */
+	Stmt parseS(String expr) {
+		return Molang.parseSingle(expr);
 	}
 
 	public static Stream<BinOpTest> binOpTestProvider() {

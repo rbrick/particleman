@@ -17,6 +17,7 @@ import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.variables.RuntimeVariable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
@@ -65,38 +66,43 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitExpression(Stmt.Expression stmt) {
-        evaluate(stmt.expr());
+    public Void visitExpression(Stmt.Expression stmt, StmtContext ctx) {
+        ctx.lastExprValue = evaluate(stmt.expr());
         return null;
     }
 
     @Override
-    public Void visitReturn(Stmt.Return stmt) {
+    public Void visitReturn(Stmt.Return stmt, StmtContext ctx) {
+        ctx.returnValue = evaluate(stmt.value());
         return null;
     }
 
     @Override
-    public Void visitBreak(Stmt.Break stmt) {
+    public Void visitBreak(Stmt.Break stmt, StmtContext ctx) {
         return null;
     }
 
     @Override
-    public Void visitContinue(Stmt.Continue stmt) {
+    public Void visitContinue(Stmt.Continue stmt, StmtContext ctx) {
         return null;
     }
 
     @Override
-    public Void visitLoop(Stmt.Loop stmt) {
+    public Void visitLoop(Stmt.Loop stmt, StmtContext ctx) {
+        Double count = evaluate(stmt.count());
+        for(int i = 0; i < count; i++) {
+            evaluate(stmt.expr());
+        }
         return null;
     }
 
     @Override
     public Double visitAccess(Expr.Access expr) {
-        if(context.assignableMap.containsKey(expr)) {
+        if (context.assignableMap.containsKey(expr)) {
             return context.assignableMap.getDouble(expr);
         }
         RuntimeVariable cachedVariable = context.getCachedVariable(expr.target().name() + "." + expr.member());
-        if(context.getVariableMap().containsKey(cachedVariable)) {
+        if (context.getVariableMap().containsKey(cachedVariable)) {
             return context.getVariableMap().getDouble(cachedVariable);
         }
         return 0.0;
@@ -116,7 +122,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Double visitBlock(Expr.Block expr) {
-        return 0.0;
+        return evaluate(expr.statements());
     }
 
     @Override
@@ -176,6 +182,31 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     public Double evaluate(Expr expr) {
         return expr.accept(this);
     }
+
+    public double evaluate(List<Stmt> stmts) {
+        StmtContext ctx = new StmtContext();
+        for (Stmt stmt : stmts) {
+            //early return
+            if (ctx.returnValue != null) {
+                return ctx.returnValue;
+            }
+            evaluate(stmt, ctx);
+        }
+        if(ctx.returnValue != null) {
+            return ctx.returnValue;
+        }
+
+        if(ctx.lastExprValue != null) {
+            return ctx.lastExprValue;
+        }
+
+        return 0.0;
+    }
+
+    private void evaluate(Stmt stmt, StmtContext ctx) {
+        stmt.accept(this, ctx);
+    }
+
 
     public ExecutionContext getContext() {
         return context;

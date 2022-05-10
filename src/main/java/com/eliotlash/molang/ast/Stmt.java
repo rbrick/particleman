@@ -2,14 +2,14 @@ package com.eliotlash.molang.ast;
 
 public interface Stmt {
 
-	<R> R accept(Visitor<R> visitor);
+	<R> R accept(Visitor<R> visitor, StmtContext ctx);
 
 	/**
 	 * expr;
 	 */
 	record Expression(Expr expr) implements Stmt {
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitExpression(this);
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitExpression(this, ctx);
 		}
 	}
 
@@ -17,8 +17,8 @@ public interface Stmt {
 	 * return expr;
 	 */
 	record Return(Expr value) implements Stmt {
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitReturn(this);
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitReturn(this, ctx);
 		}
 	}
 
@@ -26,8 +26,8 @@ public interface Stmt {
 	 * break;
 	 */
 	record Break() implements Stmt {
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitBreak(this);
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitBreak(this, ctx);
 		}
 	}
 
@@ -35,8 +35,8 @@ public interface Stmt {
 	 * continue;
 	 */
 	record Continue() implements Stmt {
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitContinue(this);
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitContinue(this, ctx);
 		}
 	}
 
@@ -44,20 +44,20 @@ public interface Stmt {
 	 * loop(expr, expr);
 	 */
 	record Loop(Expr count, Expr expr) implements Stmt {
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitLoop(this);
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitLoop(this, ctx);
 		}
 	}
 
 	interface Visitor<R> {
-		default R visit(Stmt stmt) {
-			return stmt.accept(this);
+		default R visit(Stmt stmt, StmtContext stmtContext) {
+			return stmt.accept(this, stmtContext);
 		}
 
-		R visitExpression(Expression stmt);
-		R visitReturn(Return stmt);
-		R visitBreak(Break stmt);
-		R visitContinue(Continue stmt);
-		R visitLoop(Loop stmt);
+		R visitExpression(Expression stmt, StmtContext stmtContext);
+		R visitReturn(Return stmt, StmtContext stmtContext);
+		R visitBreak(Break stmt, StmtContext stmtContext);
+		R visitContinue(Continue stmt, StmtContext stmtContext);
+		R visitLoop(Loop stmt, StmtContext stmtContext);
 	}
 }
