@@ -2,63 +2,32 @@ package com.eliotlash.molang.ast;
 
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.functions.FunctionDefinition;
-import com.eliotlash.molang.functions.classic.*;
-import com.eliotlash.molang.functions.limit.Clamp;
-import com.eliotlash.molang.functions.limit.Max;
-import com.eliotlash.molang.functions.limit.Min;
-import com.eliotlash.molang.functions.rounding.Ceil;
-import com.eliotlash.molang.functions.rounding.Floor;
-import com.eliotlash.molang.functions.rounding.Round;
-import com.eliotlash.molang.functions.rounding.Trunc;
-import com.eliotlash.molang.functions.utility.Lerp;
-import com.eliotlash.molang.functions.utility.LerpRotate;
-import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.variables.RuntimeVariable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
+    /**
+     * A global evaluator with a global context that is not tied to a specific entity
+     */
+    private static ExecutionContext globalContext;
+    private static Evaluator globalEvaluator;
 
-    private static Evaluator evaluator;
+    static {
+        globalContext = new ExecutionContext(globalEvaluator);
+        globalEvaluator = new Evaluator();
+        globalEvaluator.setExecutionContext(globalContext);
+    }
+
     private ExecutionContext context = new ExecutionContext(this);
 
-    private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
-
-    public Evaluator() {
-        registerFunction("math", new Abs("abs"));
-        registerFunction("math", new CosDegrees("cos"));
-        registerFunction("math", new Cos("cosradians"));
-        registerFunction("math", new SinDegrees("sin"));
-        registerFunction("math", new Sin("sinradians"));
-        registerFunction("math", new Exp("exp"));
-        registerFunction("math", new Ln("ln"));
-        registerFunction("math", new Mod("mod"));
-        registerFunction("math", new Pow("pow"));
-        registerFunction("math", new Sqrt("sqrt"));
-        registerFunction("math", new Clamp("clamp"));
-        registerFunction("math", new Max("max"));
-        registerFunction("math", new Min("min"));
-        registerFunction("math", new Ceil("ceil"));
-        registerFunction("math", new Floor("floor"));
-        registerFunction("math", new Round("round"));
-        registerFunction("math", new Trunc("trunc"));
-        registerFunction("math", new Lerp("lerp"));
-        registerFunction("math", new LerpRotate("lerprotate"));
-        registerFunction("math", new Random("random"));
+    public static Evaluator getGlobalEvaluator() {
+        return globalEvaluator;
     }
 
-    public void registerFunction(String target, Function function) {
-        functionMap.put(new FunctionDefinition(new Expr.Variable(target), function.getName()), function);
-    }
-
-    public static Evaluator getEvaluator() {
-        if (evaluator == null) {
-            evaluator = new Evaluator();
-        }
-        return evaluator;
+    public static ExecutionContext getGlobalContext() {
+        return globalContext;
     }
 
     public void setExecutionContext(ExecutionContext context) {
@@ -90,7 +59,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     @Override
     public Void visitLoop(Stmt.Loop stmt, StmtContext ctx) {
         Double count = evaluate(stmt.count());
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             evaluate(stmt.expr());
         }
         return null;
@@ -128,7 +97,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     @Override
     public Double visitCall(Expr.Call expr) {
         FunctionDefinition functionDefinition = new FunctionDefinition(expr.target(), expr.member());
-        Function function = this.functionMap.get(functionDefinition);
+        Function function = this.context.getFunction(functionDefinition);
         if (function == null) {
             return 0.0;
         } else {
@@ -192,11 +161,11 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
             }
             evaluate(stmt, ctx);
         }
-        if(ctx.returnValue != null) {
+        if (ctx.returnValue != null) {
             return ctx.returnValue;
         }
 
-        if(ctx.lastExprValue != null) {
+        if (ctx.lastExprValue != null) {
             return ctx.lastExprValue;
         }
 
@@ -206,7 +175,6 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     private void evaluate(Stmt stmt, StmtContext ctx) {
         stmt.accept(this, ctx);
     }
-
 
     public ExecutionContext getContext() {
         return context;

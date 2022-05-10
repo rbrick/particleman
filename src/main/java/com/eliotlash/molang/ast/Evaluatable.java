@@ -38,7 +38,7 @@ public class Evaluatable {
         if(!isConstant()) {
             return 0.0;
         }
-        return Evaluator.getEvaluator().evaluate(expr);
+        return Evaluator.getGlobalEvaluator().evaluate(expr);
     }
 
 }
