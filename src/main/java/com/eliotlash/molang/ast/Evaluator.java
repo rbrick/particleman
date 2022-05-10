@@ -16,7 +16,6 @@ import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.variables.RuntimeVariable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +28,14 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     public Evaluator() {
         registerFunction("math", new Abs("abs"));
-        registerFunction("math", new Cos("cos"));
-        registerFunction("math", new CosDegrees("cosdegrees"));
+        registerFunction("math", new CosDegrees("cos"));
+        registerFunction("math", new Cos("cosradians"));
+        registerFunction("math", new SinDegrees("sin"));
+        registerFunction("math", new Sin("sinradians"));
         registerFunction("math", new Exp("exp"));
         registerFunction("math", new Ln("ln"));
         registerFunction("math", new Mod("mod"));
         registerFunction("math", new Pow("pow"));
-        registerFunction("math", new Sin("sin"));
-        registerFunction("math", new SinDegrees("sindegrees"));
         registerFunction("math", new Sqrt("sqrt"));
         registerFunction("math", new Clamp("clamp"));
         registerFunction("math", new Max("max"));
@@ -67,6 +66,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitExpression(Stmt.Expression stmt) {
+        evaluate(stmt.expr());
         return null;
     }
 
@@ -97,10 +97,9 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Double visitAssignment(Expr.Assignment expr) {
-        var rhs = evaluate(expr.expression());
-
-        // TODO: Do assignment
-        return rhs;
+        double value = evaluate(expr.expression());
+        context.assignableMap.put(expr.variable(), value);
+        return value;
     }
 
     @Override
@@ -146,7 +145,8 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Double visitNegate(Expr.Negate expr) {
-        return -evaluate(expr.value());
+        Double evaluate = evaluate(expr.value());
+        return -evaluate;
     }
 
     @Override
@@ -168,5 +168,9 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     public Double evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    public ExecutionContext getContext() {
+        return context;
     }
 }

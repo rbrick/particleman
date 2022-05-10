@@ -1,9 +1,9 @@
 package com.eliotlash.molang.functions.utility;
 
-import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.utils.Interpolations;
+import com.eliotlash.molang.variables.ExecutionContext;
 
 public class Lerp extends Function {
 

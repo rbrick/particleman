@@ -13,7 +13,6 @@ public class CompileConstants {
 	public Map<String, Expr.Constant> constants = new HashMap<>();
 
 	public CompileConstants() {
-		/* Some default values */
 		this.registerConstant("PI", Math.PI);
 		this.registerConstant("E", Math.E);
 	}

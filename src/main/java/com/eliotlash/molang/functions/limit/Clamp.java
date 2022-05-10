@@ -1,9 +1,9 @@
 package com.eliotlash.molang.functions.limit;
 
-import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.utils.MathUtils;
+import com.eliotlash.molang.variables.ExecutionContext;
 
 public class Clamp extends Function {
 	public Clamp(String name) {

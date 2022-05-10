@@ -14,6 +14,7 @@ public class Parser {
 
 	private final List<Token> input;
 	private int current = 0;
+	private CompileConstants constants = new CompileConstants();
 
 	public Parser(List<Token> input) {
 		this.input = input;
@@ -286,7 +287,9 @@ public class Parser {
 		}
 
 		if (match(IDENTIFIER)) {
-			return new Expr.Variable(previous().lexeme());
+			String lexeme = previous().lexeme();
+			Expr constant = constants.get(lexeme);
+			return constant == null ? new Expr.Variable(lexeme) : constant;
 		}
 
 		if (match(NUMERAL)) {
