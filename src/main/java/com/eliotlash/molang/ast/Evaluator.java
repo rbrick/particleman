@@ -92,6 +92,9 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Double visitAccess(Expr.Access expr) {
+        if(context.assignableMap.containsKey(expr)) {
+            return context.assignableMap.getDouble(expr);
+        }
         return null;
     }
 

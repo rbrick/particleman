@@ -24,13 +24,14 @@ class EvaluatorTest extends TestBase {
 
 	@Test
 	void visitAccess() {
-
+		Expr.Access acc = access("temp", "test");
+		eval.visitAssignment(new Expr.Assignment(acc, new Expr.Constant(5)));
+		assertEquals(5, eval.visitAccess(acc));
 	}
 
 	@Test
 	void visitAssignment() {
 		Expr.Access acc = access("query", "test");
-
 		assertEquals(5, eval.visitAssignment(new Expr.Assignment(acc, new Expr.Constant(5))));
 	}
 
