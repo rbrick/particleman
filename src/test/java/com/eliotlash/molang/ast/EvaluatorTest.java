@@ -40,6 +40,9 @@ class EvaluatorTest extends TestBase {
 	@Test
 	void visitCall() {
 		assertEquals(2, eval.visitCall(new Expr.Call(v("math"), "min", List.of(c(2), c(5)))));
+		eval.evaluate(parseE("query.head_y_rotation = 5"));
+		assertEquals(-30, eval.evaluate(parseE("math.clamp(-5*6,-30,30)")));
+		assertEquals(3.3, eval.evaluate(parseE("query.head_y_rotation*0.66")));
 	}
 
 	@Test
