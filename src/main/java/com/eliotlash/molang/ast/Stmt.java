@@ -49,6 +49,12 @@ public interface Stmt {
 		}
 	}
 
+	record If(Expr condition, Expr.Block body) implements Stmt{
+		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
+			return visitor.visitIf(this, ctx);
+		}
+	}
+
 	interface Visitor<R> {
 		default R visit(Stmt stmt, StmtContext stmtContext) {
 			return stmt.accept(this, stmtContext);
@@ -59,5 +65,6 @@ public interface Stmt {
 		R visitBreak(Break stmt, StmtContext stmtContext);
 		R visitContinue(Continue stmt, StmtContext stmtContext);
 		R visitLoop(Loop stmt, StmtContext stmtContext);
+		R visitIf(If stmt, StmtContext stmtContext);
 	}
 }

@@ -2,7 +2,6 @@ package com.eliotlash.molang.ast;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -104,6 +103,19 @@ class EvaluatorTest extends TestBase {
 				});
 				t.x;
 				"""));
+	}
+
+	@Test
+	void visitIf() {
+		Double value = evaluateMultiline("""
+				if (5 * 5 == 24) {
+					return 7 + 3;
+				}
+				if(5 * 4 == 20) {
+					return 7 * 3;
+				}
+				""");
+		assertEquals(21, value);
 	}
 
 

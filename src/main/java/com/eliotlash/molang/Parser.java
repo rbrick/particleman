@@ -75,6 +75,8 @@ public class Parser {
         if (matchKeyword(Keyword.BREAK)) return breakStatement();
         if (matchKeyword(Keyword.CONTINUE)) return continueStatement();
         if (matchKeyword(Keyword.LOOP)) return loopStatement();
+        if (matchKeyword(Keyword.ELSE_IF)) return elifStatement();
+        if (matchKeyword(Keyword.IF)) return ifStatement();
 
         return expressionStatement();
     }
@@ -112,6 +114,28 @@ public class Parser {
         Expr expr = arguments.get(1);
 
         return new Stmt.Loop(count, expr);
+    }
+
+    private Stmt elifStatement() {
+//        consume(OPEN_PAREN)
+        return null;
+    }
+
+    private Stmt ifStatement() {
+        consume(OPEN_PAREN, "Expect '(' after 'if'");
+
+        List<Expr> arguments = arguments();
+
+        if (arguments.size() != 1) {
+            throw error(peek(), "Expect condition for if statement.");
+        }
+
+        Expr expr = expression();
+        if (expr instanceof Expr.Block block) {
+            return new Stmt.If(arguments.get(0), block);
+        }
+
+        throw error(peek(), "Expect block after if statement");
     }
 
     private Stmt returnStatement() {
@@ -325,7 +349,7 @@ public class Parser {
         throw error(peek(), "Expect expression.");
     }
 
-    private Expr block() {
+    private Expr.Block block() {
         var statements = new ArrayList<Stmt>();
 
         while (!isAtEnd() && !check(CLOSE_BRACE)) {

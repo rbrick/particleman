@@ -2,6 +2,7 @@ package com.eliotlash.molang.ast;
 
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.functions.FunctionDefinition;
+import com.eliotlash.molang.utils.MolangUtils;
 import com.eliotlash.molang.variables.ExecutionContext;
 import com.eliotlash.molang.variables.RuntimeVariable;
 
@@ -61,6 +62,14 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         Double count = evaluate(stmt.count());
         for (int i = 0; i < count; i++) {
             evaluate(stmt.expr());
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitIf(Stmt.If stmt, StmtContext stmtContext) {
+        if(MolangUtils.doubleToBoolean(evaluate(stmt.condition()))) {
+            evaluate(stmt.body().statements(), stmtContext);
         }
         return null;
     }
@@ -165,6 +174,10 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     public double evaluate(List<Stmt> stmts) {
         StmtContext ctx = new StmtContext();
+        return evaluate(stmts, ctx);
+    }
+
+    public double evaluate(List<Stmt> stmts, StmtContext ctx) {
         for (Stmt stmt : stmts) {
             //early return
             if (ctx.returnValue != null) {

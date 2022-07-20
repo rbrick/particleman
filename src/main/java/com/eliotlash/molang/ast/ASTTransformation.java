@@ -28,6 +28,11 @@ public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt>
 	}
 
 	@Override
+	public Stmt visitIf(Stmt.If stmt, StmtContext stmtContext) {
+		return stmt;
+	}
+
+	@Override
 	public Expr visitAccess(Expr.Access expr) {
 		return new Expr.Access((Expr.Variable) visit(expr.target()), expr.member());
 	}

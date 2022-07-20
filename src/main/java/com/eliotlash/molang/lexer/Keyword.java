@@ -8,7 +8,10 @@ public enum Keyword {
 	LOOP("loop"),
 	FOR_EACH("for_each"),
 	BREAK("break"),
-	CONTINUE("continue");
+	CONTINUE("continue"),
+	IF("if"),
+	ELSE("else"),
+	ELSE_IF("elif");
 
 	private final String lexeme;
 
