@@ -129,6 +129,16 @@ public interface Expr {
 	}
 
 	/**
+	 * player.bone -> rotation
+	 */
+	record SwitchContext(Expr.Access left, Expr right) implements Expr {
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			return visitor.visitSwitchContext(this);
+		}
+	}
+
+	/**
 	 * some_identifier
 	 */
 	record Variable(String name) implements Expr {
@@ -170,6 +180,7 @@ public interface Expr {
 		R visitNegate(Negate expr);
 		R visitNot(Not expr);
 		R visitTernary(Ternary expr);
+		R visitSwitchContext(SwitchContext expr);
 		R visitVariable(Variable expr);
 	}
 }

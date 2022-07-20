@@ -146,6 +146,14 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Double visitSwitchContext(Expr.SwitchContext expr) {
+        context.contextStack.push(expr.left());
+        Double value = evaluate(expr.right());
+        context.contextStack.pop();
+        return value;
+    }
+
+    @Override
     public Double visitVariable(Expr.Variable expr) {
         RuntimeVariable runtimeVariable = context.getCachedVariable(expr.name());
         return context.getVariableMap().getOrDefault(runtimeVariable, 0);

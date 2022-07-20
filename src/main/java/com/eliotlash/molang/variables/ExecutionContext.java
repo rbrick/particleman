@@ -21,9 +21,11 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class ExecutionContext {
     private Evaluator evaluator;
+    public final Stack<Expr.Access> contextStack = new Stack<>();
     private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
