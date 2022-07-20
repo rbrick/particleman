@@ -25,7 +25,10 @@ import java.util.Map;
 public class ExecutionContext {
     private Evaluator evaluator;
     private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
-
+    private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
+    private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
+    public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
+    public final Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
     public ExecutionContext(Evaluator evaluator) {
         this.evaluator = evaluator;
@@ -56,10 +59,6 @@ public class ExecutionContext {
         return evaluator;
     }
 
-    private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
-    private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
-    public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
-
     public Object2DoubleMap<RuntimeVariable> getVariableMap() {
         return variableMap;
     }
@@ -84,6 +83,10 @@ public class ExecutionContext {
 
     public void registerFunction(String target, Function function) {
         functionMap.putIfAbsent(new FunctionDefinition(new Expr.Variable(target), function.getName()), function);
+    }
+
+    public void registerFunction(FunctionDefinition definition, Function function) {
+        functionMap.putIfAbsent(definition, function);
     }
 
     public Function getFunction(FunctionDefinition definition) {

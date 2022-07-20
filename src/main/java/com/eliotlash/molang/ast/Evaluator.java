@@ -70,6 +70,9 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         if (context.assignableMap.containsKey(expr)) {
             return context.assignableMap.getDouble(expr);
         }
+        if (context.functionScopedArguments.containsKey(expr)) {
+            return context.functionScopedArguments.getDouble(expr);
+        }
         RuntimeVariable cachedVariable = context.getCachedVariable(expr.target().name() + "." + expr.member());
         if (context.getVariableMap().containsKey(cachedVariable)) {
             return context.getVariableMap().getDouble(cachedVariable);
