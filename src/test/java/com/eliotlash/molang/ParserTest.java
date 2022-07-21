@@ -29,7 +29,6 @@ public class ParserTest extends TestBase {
 		assertEquals(new Stmt.Continue(), s("continue;"));
 		assertThrows(ParseException.class, () -> s("continue"));
 
-		assertEquals(new Stmt.If(c(1), new Expr.Block(List.of(new Stmt.Expression(setThing)))), s("if(1) { v.set_thing(q.thing); }"));
 		assertThrows(ParseException.class, () -> s("if(5 * 5)"));
 
 	}

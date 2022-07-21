@@ -1,5 +1,7 @@
 package com.eliotlash.molang.ast;
 
+import java.util.List;
+
 public interface Stmt {
 
 	<R> R accept(Visitor<R> visitor, StmtContext ctx);
@@ -49,7 +51,7 @@ public interface Stmt {
 		}
 	}
 
-	record If(Expr condition, Expr.Block body) implements Stmt{
+	record If(Expr condition, Expr.Block body, List<Stmt.If> elifs, Expr.Block elseBlock) implements Stmt{
 		public <R> R accept(Visitor<R> visitor, StmtContext ctx) {
 			return visitor.visitIf(this, ctx);
 		}

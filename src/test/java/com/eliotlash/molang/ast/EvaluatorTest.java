@@ -107,7 +107,7 @@ class EvaluatorTest extends TestBase {
 
 	@Test
 	void visitIf() {
-		Double value = evaluateMultiline("""
+		Double ifValue = evaluateMultiline("""
 				if (5 * 5 == 24) {
 					return 7 + 3;
 				}
@@ -115,7 +115,98 @@ class EvaluatorTest extends TestBase {
 					return 7 * 3;
 				}
 				""");
-		assertEquals(21, value);
+		assertEquals(21, ifValue);
+
+		Double elifValue1 = evaluateMultiline("""
+				if (1 + 1 == 2) {
+					temp.test =  7 + 3;
+				}
+				elif (1 + 1 == 3) {
+					temp.test = 7 * 3;
+				}
+				elif (1 + 1 == 4) {
+					temp.test = 7 * 1;
+				}
+				else {
+					temp.test = 100;
+				}
+				return temp.test;
+				""");
+		assertEquals(10, elifValue1);
+
+		Double elifValue2 = evaluateMultiline("""
+				if (1 + 1 == 0) {
+					temp.test =  7 + 3;
+				}
+				elif (1 + 1 == 2) {
+					temp.test = 7 * 3;
+				}
+				elif (1 + 1 == 4) {
+					temp.test = 7 * 1;
+				}
+				else {
+					temp.test = 100;
+				}
+				return temp.test;
+				""");
+		assertEquals(21, elifValue2);
+
+		Double elifValue3 = evaluateMultiline("""
+				if (1 + 1 == 0) {
+					temp.test =  7 + 3;
+				}
+				elif (1 + 1 == 2) {
+					temp.test = 7 * 3;
+				}
+				elif (1 + 1 == 2) {
+					temp.test = 7 * 1;
+				}
+				else {
+					temp.test = 100;
+				}
+				return temp.test;
+				""");
+		assertEquals(21, elifValue3);
+
+		Double elifValue4 = evaluateMultiline("""
+				if (1 + 1 == 0) {
+					temp.test =  7 + 3;
+				}
+				elif (1 + 1 == 4) {
+					temp.test = 7 * 3;
+				}
+				elif (1 + 1 == 9) {
+					temp.test = 1800;
+				}
+				elif (1 + 1 == 2) {
+					temp.test = 7 * 1;
+				}
+				elif (1 + 1 == 90) {
+					temp.test = 1800;
+				}
+				else {
+					temp.test = 100;
+				}
+				return temp.test;
+				""");
+		assertEquals(7, elifValue4);
+
+		Double elifValue5 = evaluateMultiline("""
+				if (1 + 1 == 0) {
+					temp.test =  7 + 3;
+				}
+				elif (1 + 1 == 4) {
+					temp.test = 7 * 3;
+				}
+				elif (1 + 1 == 6) {
+					temp.test = 7 * 1;
+				}
+				else {
+					temp.test = 100;
+				}
+				return temp.test;
+				""");
+		assertEquals(100, elifValue5);
 	}
 
 

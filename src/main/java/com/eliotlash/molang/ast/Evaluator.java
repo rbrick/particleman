@@ -68,9 +68,28 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitIf(Stmt.If stmt, StmtContext stmtContext) {
+        boolean hasHitBranch = false;
+
+        //evaluate if
         if(MolangUtils.doubleToBoolean(evaluate(stmt.condition()))) {
             evaluate(stmt.body().statements(), stmtContext);
+            hasHitBranch = true;
         }
+
+        //evaluate elifs
+        for (Stmt.If elif : stmt.elifs()) {
+            if(!hasHitBranch) {
+                if(MolangUtils.doubleToBoolean(evaluate(elif.condition()))) {
+                    evaluate(elif.body().statements(), stmtContext);
+                    hasHitBranch = true;
+                }
+            }
+        }
+
+        if(!hasHitBranch && stmt.elseBlock() != null) {
+            evaluate(stmt.elseBlock().statements(), stmtContext);
+        }
+
         return null;
     }
 

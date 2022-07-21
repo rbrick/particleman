@@ -116,7 +116,6 @@ public class Parser {
     }
 
 
-
     private Stmt ifStatement() {
         consume(OPEN_PAREN, "Expect '(' after 'if'");
 
@@ -129,10 +128,12 @@ public class Parser {
         Expr expr = expression();
         if (expr instanceof Expr.Block block) {
             List<Stmt.If> elifStmts = new ArrayList<>();
+            Expr.Block elseBlock = null;
 
-            //capture all elifs
-            if(matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
-            return new Stmt.If(arguments.get(0), block);
+            if (matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
+            if(matchKeyword(Keyword.ELSE)) elseBlock = elseStatement();
+
+            return new Stmt.If(arguments.get(0), block, elifStmts, elseBlock);
         }
 
         throw error(peek(), "Expect block after if statement");
@@ -148,14 +149,26 @@ public class Parser {
         }
 
         Expr expr = expression();
+        List<Stmt.If> elifStmts = new ArrayList<>();
         if (expr instanceof Expr.Block block) {
-            List<Stmt.If> elifStmts = new ArrayList<>();
 
             //capture all elifs
-            if(matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
+            if (matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
 
+            //insert at 0th index so order is kept
+            elifStmts.add(0, new Stmt.If(arguments.get(0), block, new ArrayList<>(), null));
+            return elifStmts;
         }
+
         throw error(peek(), "Expect block after elif statement");
+    }
+
+    private Expr.Block elseStatement() {
+        Expr expr = expression();
+        if (expr instanceof Expr.Block block) {
+            return block;
+        }
+        throw error(peek(), "Expect block after else statement");
     }
 
     private Stmt returnStatement() {
@@ -296,7 +309,7 @@ public class Parser {
             if (access instanceof Expr.Access acc) {
                 return new Expr.SwitchContext(acc, right);
             }
-			throw error(previous(), "Arrow operator must be used on an ACCESS target");
+            throw error(previous(), "Arrow operator must be used on an ACCESS target");
         }
         return access;
     }
