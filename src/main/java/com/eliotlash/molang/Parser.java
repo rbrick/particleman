@@ -75,7 +75,6 @@ public class Parser {
         if (matchKeyword(Keyword.BREAK)) return breakStatement();
         if (matchKeyword(Keyword.CONTINUE)) return continueStatement();
         if (matchKeyword(Keyword.LOOP)) return loopStatement();
-        if (matchKeyword(Keyword.ELSE_IF)) return elifStatement();
         if (matchKeyword(Keyword.IF)) return ifStatement();
 
         return expressionStatement();
@@ -116,10 +115,7 @@ public class Parser {
         return new Stmt.Loop(count, expr);
     }
 
-    private Stmt elifStatement() {
-//        consume(OPEN_PAREN)
-        return null;
-    }
+
 
     private Stmt ifStatement() {
         consume(OPEN_PAREN, "Expect '(' after 'if'");
@@ -132,10 +128,34 @@ public class Parser {
 
         Expr expr = expression();
         if (expr instanceof Expr.Block block) {
+            List<Stmt.If> elifStmts = new ArrayList<>();
+
+            //capture all elifs
+            if(matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
             return new Stmt.If(arguments.get(0), block);
         }
 
         throw error(peek(), "Expect block after if statement");
+    }
+
+    private List<Stmt.If> elifStatements() {
+        consume(OPEN_PAREN, "Expect '(' after 'elif'");
+
+        List<Expr> arguments = arguments();
+
+        if (arguments.size() != 1) {
+            throw error(peek(), "Expect condition for elif statement.");
+        }
+
+        Expr expr = expression();
+        if (expr instanceof Expr.Block block) {
+            List<Stmt.If> elifStmts = new ArrayList<>();
+
+            //capture all elifs
+            if(matchKeyword(Keyword.ELSE_IF)) elifStmts = elifStatements();
+
+        }
+        throw error(peek(), "Expect block after elif statement");
     }
 
     private Stmt returnStatement() {

@@ -30,7 +30,7 @@ public class ExecutionContext {
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
     public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
-    public final Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
+    public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
     public ExecutionContext(Evaluator evaluator) {
         this.evaluator = evaluator;
