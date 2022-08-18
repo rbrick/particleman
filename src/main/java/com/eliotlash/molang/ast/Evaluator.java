@@ -105,7 +105,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         if (context.getVariableMap().containsKey(cachedVariable)) {
             return context.getVariableMap().getDouble(cachedVariable);
         }
-        return 0.0;
+        return null;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
 
     @Override
     public Double visitCoalesce(Expr.Coalesce expr) {
-        var value = evaluate(expr.value());
+        var value = evaluateNullable(expr.value());
         return value == null ? evaluate(expr.fallback()) : value;
     }
 
@@ -188,6 +188,11 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     }
 
     public Double evaluate(Expr expr) {
+        Double result = expr.accept(this);
+        return result == null ? 0 : result;
+    }
+
+    public Double evaluateNullable(Expr expr) {
         return expr.accept(this);
     }
 

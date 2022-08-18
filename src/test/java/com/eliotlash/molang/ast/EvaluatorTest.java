@@ -31,6 +31,14 @@ class EvaluatorTest extends TestBase {
 	}
 
 	@Test
+	void visitCoallesce() {
+		double value1 = evaluateMultiline("c.x = c.x ?? 5; return c.x;");
+		double value2 = evaluateMultiline("c.x = 6; c.x = c.x ?? 5; return c.x;");
+		assertEquals(5, value1);
+		assertEquals(6, value2);
+	}
+
+	@Test
 	void visitAssignment() {
 		Expr.Access acc = access("query", "test");
 		assertEquals(5, eval.visitAssignment(new Expr.Assignment(acc, new Expr.Constant(5))));
