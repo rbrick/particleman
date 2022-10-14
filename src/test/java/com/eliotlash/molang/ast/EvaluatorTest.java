@@ -217,6 +217,16 @@ class EvaluatorTest extends TestBase {
 		assertEquals(100, elifValue5);
 	}
 
+	@Test
+	void visitStruct() {
+		double v = evaluateMultiline("""
+				animal.cow.head = 5;
+				animal.cow.leg = 3;
+				return animal.cow.leg * animal.cow.head;
+				""");
+		assertEquals(v, 15);
+	}
+
 
 	public double evaluateMultiline(String multiline) {
 		return eval.evaluate(Molang.parse(multiline));

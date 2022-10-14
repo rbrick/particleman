@@ -163,6 +163,12 @@ public class ParserTest extends TestBase {
 		assertEquals(new Expr.Block(stmts), e("{ t.test = 20; return t.test; }"));
 	}
 
+	@Test
+	void testStruct() {
+		Expr e = e("animal.cow.head.testdfsdf.sdf = 5");
+		System.out.println(e);
+	}
+
 	/**
 	 * Parses the input as an expression.
 	 */

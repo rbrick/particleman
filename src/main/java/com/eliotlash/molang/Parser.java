@@ -343,23 +343,25 @@ public class Parser {
             return new Expr.Call(v, name.lexeme(), arguments);
         }
         else if (match(DOT)) {
-            Expr.Struct struct = new Expr.Struct(v, new ArrayList<>());
-            struct.innerStructs().add(new Expr.Struct(new Expr.Variable(name.lexeme()), new ArrayList<>()));
-            finishStruct(struct.innerStructs().get(0));
-            return struct;
+            Expr.Struct parentStruct = new Expr.Struct(v, null, new ArrayList<>());
+
+            //child's child's child's...child
+            Expr.Struct infant = finishStruct(parentStruct);
+            return new Expr.Access(infant, infant.target().name());
         }
         else {
             return new Expr.Access(v, name.lexeme());
         }
     }
 
-    private void finishStruct(Expr.Struct struct) {
+    private Expr.Struct finishStruct(Expr.Struct parentStruct) {
         if(match(IDENTIFIER)) {
-            Expr.Struct inner = new Expr.Struct(new Expr.Variable(previous().lexeme()), new ArrayList<>());
-            struct.innerStructs().add(inner);
-            if(!match(DOT)) return;
-            finishStruct(inner);
+            Expr.Struct child = new Expr.Struct(new Expr.Variable(previous().lexeme()), parentStruct, new ArrayList<>());
+            parentStruct.children().add(child);
+            if(!match(DOT)) return child;
+            parentStruct = finishStruct(child);
         }
+        return parentStruct;
     }
 
     private List<Expr> arguments() {

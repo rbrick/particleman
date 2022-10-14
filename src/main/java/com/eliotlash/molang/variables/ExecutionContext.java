@@ -29,6 +29,7 @@ public class ExecutionContext {
     private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
+    private final Object2DoubleMap<Expr.Struct> structMap = new Object2DoubleOpenHashMap<>();
     public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
     public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
@@ -63,6 +64,10 @@ public class ExecutionContext {
 
     public Object2DoubleMap<RuntimeVariable> getVariableMap() {
         return variableMap;
+    }
+
+    public Object2DoubleMap<Expr.Struct> getStructMap() {
+        return structMap;
     }
 
     public RuntimeVariable getCachedVariable(String var) {

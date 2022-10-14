@@ -4,192 +4,234 @@ import java.util.List;
 
 public interface Expr {
 
-	<R> R accept(Visitor<R> visitor);
+    <R> R accept(Visitor<R> visitor);
 
-	/**
-	 * target.member
-	 */
-	record Access(Variable target, String member) implements Expr, Assignable {
+    /**
+     * target.member
+     */
+    record Access(Accessible target, String member) implements Expr, Assignable {
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitAccess(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitAccess(this);
+        }
+    }
 
-	record Struct(Variable target, List<Struct> innerStructs) implements Expr, Assignable {
+    record Struct(Variable target, Struct parent, List<Struct> children) implements Expr, Assignable, Accessible {
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			//todo implement evaluation
-			return null;
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            throw new RuntimeException("Should not ever evalute a struct");
+        }
 
-	/**
-	 * variable = expression
-	 */
-	record Assignment(Assignable variable, Expr expression) implements Expr {
+        @Override
+        public String toString() {
+            if (parent == null) {
+                return target.toString();
+            }
+            return parent + "." + target.toString();
+        }
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitAssignment(this);
-		}
-	}
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-	/**
-	 * left op right
-	 */
-	record BinOp(Operator operator, Expr left, Expr right) implements Expr {
+            Struct struct = (Struct) o;
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitBinOp(this);
-		}
-	}
+            if (!target.equals(struct.target)) return false;
+			if(parent == null) {
+				return struct.parent == null;
+			}
+            return parent.equals(struct.parent);
+        }
 
-	/**
-	 * {
-	 *     stmt;
-	 *     stmt;
-	 *     ...
-	 * }
-	 */
-	record Block(List<Stmt> statements) implements Expr {
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitBlock(this);
-		}
-	}
+        @Override
+        public int hashCode() {
+            int result = target.hashCode();
+            if (parent != null) {
+                result = 31 * result + parent.hashCode();
+            }
+            return result;
+        }
+    }
 
-	/**
-	 * left op right
-	 */
-	record Coalesce(Expr value, Expr fallback) implements Expr {
+    /**
+     * variable = expression
+     */
+    record Assignment(Assignable variable, Expr expression) implements Expr {
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitCoalesce(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitAssignment(this);
+        }
+    }
 
-	/**
-	 * target.member(arguments)
-	 */
-	record Call(Variable target, String member, List<Expr> arguments) implements Expr {
+    /**
+     * left op right
+     */
+    record BinOp(Operator operator, Expr left, Expr right) implements Expr {
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitCall(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitBinOp(this);
+        }
+    }
 
-	/**
-	 * 2.4
-	 */
-	record Constant(double value) implements Expr {
+    /**
+     * {
+     * stmt;
+     * stmt;
+     * ...
+     * }
+     */
+    record Block(List<Stmt> statements) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitBlock(this);
+        }
+    }
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitConstant(this);
-		}
-	}
+    /**
+     * left op right
+     */
+    record Coalesce(Expr value, Expr fallback) implements Expr {
 
-	/**
-	 * ( expr )
-	 */
-	record Group(Expr value) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitCoalesce(this);
+        }
+    }
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitGroup(this);
-		}
-	}
+    /**
+     * target.member(arguments)
+     */
+    record Call(Variable target, String member, List<Expr> arguments) implements Expr {
 
-	/**
-	 * -expr
-	 */
-	record Negate(Expr value) implements Expr {
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitNegate(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitCall(this);
+        }
+    }
 
-	/**
-	 * !expr
-	 */
-	record Not(Expr value) implements Expr {
+    /**
+     * 2.4
+     */
+    record Constant(double value) implements Expr {
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitNot(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitConstant(this);
+        }
+    }
 
-	/**
-	 * condition ? ifTrue : ifFalse
-	 */
-	record Ternary(Expr condition, Expr ifTrue, Expr ifFalse) implements Expr {
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitTernary(this);
-		}
-	}
+    /**
+     * ( expr )
+     */
+    record Group(Expr value) implements Expr {
 
-	/**
-	 * player.bone -> rotation
-	 */
-	record SwitchContext(Expr.Access left, Expr right) implements Expr {
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitSwitchContext(this);
-		}
-	}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitGroup(this);
+        }
+    }
 
-	/**
-	 * some_identifier
-	 */
-	record Variable(String name) implements Expr {
+    /**
+     * -expr
+     */
+    record Negate(Expr value) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitNegate(this);
+        }
+    }
 
-		@Override
-		public <R> R accept(Visitor<R> visitor) {
-			return visitor.visitVariable(this);
-		}
+    /**
+     * !expr
+     */
+    record Not(Expr value) implements Expr {
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitNot(this);
+        }
+    }
 
-			Variable variable = (Variable) o;
+    /**
+     * condition ? ifTrue : ifFalse
+     */
+    record Ternary(Expr condition, Expr ifTrue, Expr ifFalse) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitTernary(this);
+        }
+    }
 
-			return name != null ? name.equalsIgnoreCase(variable.name) : variable.name == null;
-		}
+    /**
+     * player.bone -> rotation
+     */
+    record SwitchContext(Expr.Access left, Expr right) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitSwitchContext(this);
+        }
+    }
 
-		@Override
-		public int hashCode() {
-			return name != null ? name.toLowerCase().hashCode() : 0;
-		}
-	}
+    /**
+     * some_identifier
+     */
+    record Variable(String name) implements Expr, Accessible {
 
-	interface Visitor<R> {
-		default R visit(Expr node) {
-			return node.accept(this);
-		}
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitVariable(this);
+        }
 
-		R visitAccess(Access expr);
-		R visitAssignment(Assignment expr);
-		R visitBinOp(BinOp expr);
-		R visitBlock(Block expr);
-		R visitCall(Call expr);
-		R visitCoalesce(Coalesce expr);
-		R visitConstant(Constant expr);
-		R visitGroup(Group expr);
-		R visitNegate(Negate expr);
-		R visitNot(Not expr);
-		R visitTernary(Ternary expr);
-		R visitSwitchContext(SwitchContext expr);
-		R visitVariable(Variable expr);
-	}
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Variable variable = (Variable) o;
+
+            return name != null ? name.equalsIgnoreCase(variable.name) : variable.name == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return name != null ? name.toLowerCase().hashCode() : 0;
+        }
+    }
+
+    interface Visitor<R> {
+        default R visit(Expr node) {
+            return node.accept(this);
+        }
+
+        R visitAccess(Access expr);
+
+        R visitAssignment(Assignment expr);
+
+        R visitBinOp(BinOp expr);
+
+        R visitBlock(Block expr);
+
+        R visitCall(Call expr);
+
+        R visitCoalesce(Coalesce expr);
+
+        R visitConstant(Constant expr);
+
+        R visitGroup(Group expr);
+
+        R visitNegate(Negate expr);
+
+        R visitNot(Not expr);
+
+        R visitTernary(Ternary expr);
+
+        R visitSwitchContext(SwitchContext expr);
+
+        R visitVariable(Variable expr);
+    }
 }

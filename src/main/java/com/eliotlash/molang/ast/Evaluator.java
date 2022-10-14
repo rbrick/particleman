@@ -1,5 +1,6 @@
 package com.eliotlash.molang.ast;
 
+import com.eliotlash.molang.ParseException;
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.functions.FunctionDefinition;
 import com.eliotlash.molang.utils.MolangUtils;
@@ -71,22 +72,22 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         boolean hasHitBranch = false;
 
         //evaluate if
-        if(MolangUtils.doubleToBoolean(evaluate(stmt.condition()))) {
+        if (MolangUtils.doubleToBoolean(evaluate(stmt.condition()))) {
             evaluate(stmt.body().statements(), stmtContext);
             hasHitBranch = true;
         }
 
         //evaluate elifs
         for (Stmt.If elif : stmt.elifs()) {
-            if(!hasHitBranch) {
-                if(MolangUtils.doubleToBoolean(evaluate(elif.condition()))) {
+            if (!hasHitBranch) {
+                if (MolangUtils.doubleToBoolean(evaluate(elif.condition()))) {
                     evaluate(elif.body().statements(), stmtContext);
                     hasHitBranch = true;
                 }
             }
         }
 
-        if(!hasHitBranch && stmt.elseBlock() != null) {
+        if (!hasHitBranch && stmt.elseBlock() != null) {
             evaluate(stmt.elseBlock().statements(), stmtContext);
         }
 
@@ -101,9 +102,16 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         if (context.functionScopedArguments.containsKey(expr)) {
             return context.functionScopedArguments.getDouble(expr);
         }
-        RuntimeVariable cachedVariable = context.getCachedVariable(expr.target().name() + "." + expr.member());
-        if (context.getVariableMap().containsKey(cachedVariable)) {
-            return context.getVariableMap().getDouble(cachedVariable);
+        if (expr.target() instanceof Expr.Variable variable) {
+            RuntimeVariable cachedVariable = context.getCachedVariable(variable.name() + "." + expr.member());
+            if (context.getVariableMap().containsKey(cachedVariable)) {
+                return context.getVariableMap().getDouble(cachedVariable);
+            }
+        }
+        if (expr.target() instanceof Expr.Struct struct) {
+            if (context.getStructMap().containsKey(struct)) {
+                return context.getStructMap().getDouble(struct);
+            }
         }
         return null;
     }
@@ -111,8 +119,19 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     @Override
     public Double visitAssignment(Expr.Assignment expr) {
         double value = evaluate(expr.expression());
-        context.assignableMap.put(expr.variable(), value);
-        return value;
+        if (expr.variable() instanceof Expr.Access access) {
+            if (access.target() instanceof Expr.Variable) {
+                context.assignableMap.put(access, value);
+            }
+            else if (access.target() instanceof Expr.Struct struct) {
+                context.getStructMap().put(struct, value);
+            }
+            else {
+                throw new RuntimeException("Unexpected assignment to non variable/struct.");
+            }
+            return value;
+        }
+        return 0d;
     }
 
     @Override
