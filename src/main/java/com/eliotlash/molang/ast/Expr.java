@@ -17,6 +17,15 @@ public interface Expr {
 		}
 	}
 
+	record Struct(Variable target, List<Struct> innerStructs) implements Expr, Assignable {
+
+		@Override
+		public <R> R accept(Visitor<R> visitor) {
+			//todo implement evaluation
+			return null;
+		}
+	}
+
 	/**
 	 * variable = expression
 	 */

@@ -341,8 +341,24 @@ public class Parser {
             List<Expr> arguments = arguments();
 
             return new Expr.Call(v, name.lexeme(), arguments);
-        } else {
+        }
+        else if (match(DOT)) {
+            Expr.Struct struct = new Expr.Struct(v, new ArrayList<>());
+            struct.innerStructs().add(new Expr.Struct(new Expr.Variable(name.lexeme()), new ArrayList<>()));
+            finishStruct(struct.innerStructs().get(0));
+            return struct;
+        }
+        else {
             return new Expr.Access(v, name.lexeme());
+        }
+    }
+
+    private void finishStruct(Expr.Struct struct) {
+        if(match(IDENTIFIER)) {
+            Expr.Struct inner = new Expr.Struct(new Expr.Variable(previous().lexeme()), new ArrayList<>());
+            struct.innerStructs().add(inner);
+            if(!match(DOT)) return;
+            finishStruct(inner);
         }
     }
 
