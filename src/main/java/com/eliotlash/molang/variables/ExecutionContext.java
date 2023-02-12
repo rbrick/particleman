@@ -16,6 +16,7 @@ import com.eliotlash.molang.functions.rounding.Trunc;
 import com.eliotlash.molang.functions.utility.Lerp;
 import com.eliotlash.molang.functions.utility.LerpRotate;
 import com.eliotlash.molang.functions.utility.Random;
+import com.eliotlash.molang.utils.MolangUtils;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 
@@ -86,6 +87,10 @@ public class ExecutionContext {
     public void setVariable(String var, double value) {
         RuntimeVariable cachedVariable = getCachedVariable(var);
         variableMap.put(cachedVariable, value);
+    }
+
+    public void setVariable(String var, boolean val) {
+        setVariable(var, MolangUtils.booleanToFloat(val));
     }
 
     public void registerFunction(String target, Function function) {
