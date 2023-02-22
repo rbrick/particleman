@@ -10,7 +10,7 @@ public class MolangUtils {
 	}
 
 	public static boolean doubleToBoolean(double input) {
-		// if not 1 we want to return false as decimal numbers are invalid in this case
-		return input == 1.0;
+		// Any value that isn't 0.0 is truthy: https://bedrock.dev/docs/beta/Molang#Values
+		return input != 0.0;
 	}
 }
