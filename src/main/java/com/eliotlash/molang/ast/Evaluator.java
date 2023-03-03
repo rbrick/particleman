@@ -120,8 +120,9 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     public Double visitAssignment(Expr.Assignment expr) {
         double value = evaluate(expr.expression());
         if (expr.variable() instanceof Expr.Access access) {
-            if (access.target() instanceof Expr.Variable) {
+            if (access.target() instanceof Expr.Variable target) {
                 context.assignableMap.put(access, value);
+                context.parseRuntimeVariable(target.name() + "." + access.member(), access);
             }
             else if (access.target() instanceof Expr.Struct struct) {
                 context.getStructMap().put(struct, value);

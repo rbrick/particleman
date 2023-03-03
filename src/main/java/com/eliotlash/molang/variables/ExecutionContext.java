@@ -17,6 +17,9 @@ import com.eliotlash.molang.functions.utility.Lerp;
 import com.eliotlash.molang.functions.utility.LerpRotate;
 import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.utils.MolangUtils;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 
@@ -26,13 +29,16 @@ import java.util.Stack;
 
 public class ExecutionContext {
     private Evaluator evaluator;
+
     public final Stack<Expr.Access> contextStack = new Stack<>();
+    public final Multimap<VariableFlavor, Pair<RuntimeVariable, Expr.Access>> flavorCache = ArrayListMultimap.create();
+    public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
+    public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
+
     private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
     private final Object2DoubleMap<Expr.Struct> structMap = new Object2DoubleOpenHashMap<>();
-    public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
-    public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
     public ExecutionContext(Evaluator evaluator) {
         this.evaluator = evaluator;
@@ -71,17 +77,34 @@ public class ExecutionContext {
         return structMap;
     }
 
+    /**
+     * Call with "query.something"
+     */
     public RuntimeVariable getCachedVariable(String var) {
         return variableCache.computeIfAbsent(var, name -> {
-            String[] split = name.split("\\.", 2);
-
-            VariableFlavor flavor = VariableFlavor.parse(split[0]);
-            if (split.length == 2 && flavor != null) {
-                return new RuntimeVariable(split[1], flavor);
-            } else {
-                return new RuntimeVariable(name, null);
-            }
+            RuntimeVariable runtimeVariable = parseRuntimeVariable(name, null);
+            return runtimeVariable;
         });
+    }
+
+    public RuntimeVariable parseRuntimeVariable(String name, Expr.Access access) {
+        String[] split = name.split("\\.", 2);
+
+        VariableFlavor flavor = VariableFlavor.parse(split[0]);
+        RuntimeVariable runtimeVariable;
+        if (split.length == 2 && flavor != null) {
+            runtimeVariable = new RuntimeVariable(split[1], flavor);
+        } else {
+            runtimeVariable = new RuntimeVariable(name, null);
+        }
+
+        if (access != null) {
+            Pair<RuntimeVariable, Expr.Access> pair = Pair.of(runtimeVariable, access);
+            if (!flavorCache.containsEntry(flavor, pair)) {
+                flavorCache.put(flavor, pair);
+            }
+        }
+        return runtimeVariable;
     }
 
     public void setVariable(String var, double value) {

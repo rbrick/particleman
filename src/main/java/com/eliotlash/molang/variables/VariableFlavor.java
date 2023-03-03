@@ -23,10 +23,14 @@ public enum VariableFlavor {
 	/**
 	 * Read/write storage on an actor.
 	 */
-	VARIABLE("variable", "v");
+	VARIABLE("variable", "v"),
+	/**
+	 * Debugging purposes
+	 */
+	READOUT("readout", "r");
 
-	private final String name;
-	private final String alias;
+	public final String name;
+	public final String alias;
 
 	VariableFlavor(String name, String alias) {
 		this.name = name;
