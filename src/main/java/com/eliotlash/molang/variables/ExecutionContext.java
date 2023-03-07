@@ -17,21 +17,17 @@ import com.eliotlash.molang.functions.utility.Lerp;
 import com.eliotlash.molang.functions.utility.LerpRotate;
 import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.utils.MolangUtils;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class ExecutionContext {
     private Evaluator evaluator;
 
     public final Stack<Expr.Access> contextStack = new Stack<>();
-    public final Multimap<VariableFlavor, Pair<RuntimeVariable, Expr.Access>> flavorCache = ArrayListMultimap.create();
+    public final Map<VariableFlavor, List<Pair<RuntimeVariable, Expr.Access>>> flavorCache = new HashMap<>();
     public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
     public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
@@ -100,8 +96,12 @@ public class ExecutionContext {
 
         if (access != null) {
             Pair<RuntimeVariable, Expr.Access> pair = Pair.of(runtimeVariable, access);
-            if (!flavorCache.containsEntry(flavor, pair)) {
-                flavorCache.put(flavor, pair);
+            if (!flavorCache.containsKey(flavor)) {
+                flavorCache.put(flavor, new ArrayList<>());
+            }
+            List<Pair<RuntimeVariable, Expr.Access>> list = flavorCache.get(flavor);
+            if (!list.contains(pair)) {
+                list.add(pair);
             }
         }
         return runtimeVariable;
