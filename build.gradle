@@ -7,6 +7,9 @@ version = "SNAPSHOT." + buildNumber
 group = "com.eliotlash.molang"
 def repsyUrl = project.repsyUrl
 
+sourceCompatibility = 17 // java 17
+targetCompatibility = 17
+
 repositories {
 	mavenCentral()
 }
