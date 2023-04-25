@@ -16,6 +16,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.google.cloud.artifactregistry.gradle-plugin'
 version = "1.0.0"
 group = "com.eliotlash.molang"
+archivesBaseName = "particleman"
 
 repositories {
 	mavenCentral()
@@ -46,9 +47,17 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifact jar
-//            artifact packageSources
-//            artifact packageJavadoc
-            artifactId = archivesBaseName
+            artifactId = project.archivesBaseName
+            pom {
+                name = project.archivesBaseName
+                licenses {
+                    license {
+                        name = 'MIT license'
+                        url = 'http://opensource.org/licenses/MIT'
+                        distribution = 'repo'
+                    }
+                }
+            }
         }
     }
     repositories {
