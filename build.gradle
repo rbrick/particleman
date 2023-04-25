@@ -48,16 +48,6 @@ publishing {
         mavenJava(MavenPublication) {
             artifact jar
             artifactId = project.archivesBaseName
-            pom {
-                name = project.archivesBaseName
-                licenses {
-                    license {
-                        name = 'MIT license'
-                        url = 'http://opensource.org/licenses/MIT'
-                        distribution = 'repo'
-                    }
-                }
-            }
         }
     }
     repositories {
