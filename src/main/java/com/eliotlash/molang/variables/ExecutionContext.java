@@ -13,6 +13,8 @@ import com.eliotlash.molang.functions.rounding.Ceil;
 import com.eliotlash.molang.functions.rounding.Floor;
 import com.eliotlash.molang.functions.rounding.Round;
 import com.eliotlash.molang.functions.rounding.Trunc;
+import com.eliotlash.molang.functions.strings.Print;
+import com.eliotlash.molang.functions.strings.StrEquals;
 import com.eliotlash.molang.functions.utility.Lerp;
 import com.eliotlash.molang.functions.utility.LerpRotate;
 import com.eliotlash.molang.functions.utility.Random;
@@ -59,6 +61,9 @@ public class ExecutionContext {
         registerFunction("math", new Lerp("lerp"));
         registerFunction("math", new LerpRotate("lerprotate"));
         registerFunction("math", new Random("random"));
+
+        registerFunction("system", new Print("print"));
+        registerFunction("strings", new StrEquals("equals"));
     }
 
     public Evaluator getEvaluator() {

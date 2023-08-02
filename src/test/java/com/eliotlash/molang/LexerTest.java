@@ -14,6 +14,13 @@ import com.eliotlash.molang.lexer.TokenType;
 public class LexerTest {
 
 	@Test
+	void testString() {
+		assertTokens("'minecraft:pig'", STRING);
+		assertTokens("'something long arbitrary and unlikely to be used'", STRING);
+		assertTokens("'anything goes really'", STRING);
+	}
+
+	@Test
 	void testIdentifier() {
 		assertTokens("two", IDENTIFIER);
 		assertTokens("query", IDENTIFIER);

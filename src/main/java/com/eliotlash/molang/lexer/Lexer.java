@@ -68,15 +68,27 @@ public class Lexer {
 			return;
 		}
 
-		var token = tryOperator(c);
 
+
+		var token = tryOperator(c);
 		if (token != null) {
+			if (token == TokenType.QUOTE) {
+				eatString();
+				return;
+			}
+
 			setToken(token);
 		} else if (isDigit(c)) {
 			eatNumeral();
 		} else if (isIdentifierStart(c)) {
 			eatIdentifier();
 		}
+	}
+
+
+	private void eatString() {
+		while (advance() != '\'') {}
+		tokens.add(new Token(TokenType.STRING, input.substring(this.startPos+1, nextPos-1)));
 	}
 
 	private void eatWhitespace() {
@@ -111,54 +123,54 @@ public class Lexer {
 
 	private TokenType tryOperator(char c) {
 		switch (c) {
-		case '!' -> {
-			if (match('=')) {
-				return TokenType.BANG_EQUAL;
+			case '!' -> {
+				if (match('=')) {
+					return TokenType.BANG_EQUAL;
+				}
+				return TokenType.NOT;
 			}
-			return TokenType.NOT;
-		}
-		case '=' -> {
-			if (match('=')) {
-				return TokenType.EQUAL_EQUAL;
+			case '=' -> {
+				if (match('=')) {
+					return TokenType.EQUAL_EQUAL;
+				}
+				return TokenType.EQUALS;
 			}
-			return TokenType.EQUALS;
-		}
-		case '<' -> {
-			if (match('=')) {
-				return TokenType.LESS_EQUAL;
+			case '<' -> {
+				if (match('=')) {
+					return TokenType.LESS_EQUAL;
+				}
+				return TokenType.LESS_THAN;
 			}
-			return TokenType.LESS_THAN;
-		}
-		case '>' -> {
-			if (match('=')) {
-				return TokenType.GREATER_EQUAL;
+			case '>' -> {
+				if (match('=')) {
+					return TokenType.GREATER_EQUAL;
+				}
+				return TokenType.GREATER_THAN;
 			}
-			return TokenType.GREATER_THAN;
-		}
-		case '&' -> {
-			if (match('&')) {
+			case '&' -> {
+				if (match('&')) {
+					return TokenType.AND;
+				}
 				return TokenType.AND;
 			}
-			return TokenType.AND;
-		}
-		case '|' -> {
-			if (match('|')) {
+			case '|' -> {
+				if (match('|')) {
+					return TokenType.OR;
+				}
 				return TokenType.OR;
 			}
-			return TokenType.OR;
-		}
-		case '-' -> {
-			if (match('>')) {
-				return TokenType.ARROW;
+			case '-' -> {
+				if (match('>')) {
+					return TokenType.ARROW;
+				}
+				return TokenType.MINUS;
 			}
-			return TokenType.MINUS;
-		}
-		case '?' -> {
-			if (match('?')) {
-				return TokenType.COALESCE;
+			case '?' -> {
+				if (match('?')) {
+					return TokenType.COALESCE;
+				}
+				return TokenType.QUESTION;
 			}
-			return TokenType.QUESTION;
-		}
 		}
 
 		return switch (c) {
@@ -177,6 +189,7 @@ public class Lexer {
 			case ';' -> TokenType.SEMICOLON;
 			case ':' -> TokenType.COLON;
 			case '.' -> TokenType.DOT;
+			case '\'' -> TokenType.QUOTE;
 			default -> null;
 		};
 	}

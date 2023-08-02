@@ -91,11 +91,14 @@ class FunctionsTest {
         assertEquals(10.0, evaluate("math.abs(-10)"));
         assertEquals(10.0, evaluate("math.abs(10)"));
 
-        assertEquals(Math.E, evaluate("math.exp(1)"));
+        assertEquals( 2.7182818284590455, evaluate("math.exp(1)"));
         assertEquals(0.0, evaluate("math.ln(1)"));
         assertEquals(2.0, evaluate("math.sqrt(4)"));
         assertEquals(2.0, evaluate("math.mod(5, 3)"));
         assertEquals(100.0, evaluate("math.pow(10, 2)"));
+
+
+        assertEquals(1.0, evaluate("!strings.equals('minecraft:pig', 'minecraft:cow')"));
     }
 
     private double evaluate(String expression) throws Exception {

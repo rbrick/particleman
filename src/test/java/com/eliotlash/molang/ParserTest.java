@@ -11,6 +11,11 @@ import com.eliotlash.molang.ast.*;
 public class ParserTest extends TestBase {
 
 	@Test
+	void testString() {
+		assertEquals(new Expr.Str("minecraft:pig"), e("'minecraft:pig'"));
+		assertEquals(new Expr.Str("hello, world. this is a string"), e("'hello, world. this is a string'"));
+	}
+	@Test
 	void testStmt() {
 		Expr setThing = call("v", "set_thing", access("q", "thing"));
 
@@ -30,6 +35,7 @@ public class ParserTest extends TestBase {
 		assertThrows(ParseException.class, () -> s("continue"));
 
 		assertThrows(ParseException.class, () -> s("if(5 * 5)"));
+
 
 	}
 
@@ -136,6 +142,9 @@ public class ParserTest extends TestBase {
 		assertThrows(ParseException.class, () -> e("fail = 20"));
 		assertThrows(ParseException.class, () -> e("20 = 20"));
 		assertThrows(ParseException.class, () -> e("(query.fail) = 20"));
+
+		Expr.Access ridingAcc = access("query", "riding");
+		assertEquals(new Expr.Assignment(ridingAcc, new Expr.Str("minecraft:pig")), e("query.riding = 'minecraft:pig'"));
 	}
 
 	@Test
@@ -148,6 +157,9 @@ public class ParserTest extends TestBase {
 						c(40),
 						op(c(20), Operator.MUL, c(40)))
 		), e("q.count(20, 40, 20 * 40)"));
+
+		assertEquals(new Expr.Call(v("q"), "str", List.of(new Expr.Str("hello, world"), new Expr.Str("minecraft:pig"))),
+				e("q.str('hello, world', 'minecraft:pig')"));
 	}
 
 	@Test
