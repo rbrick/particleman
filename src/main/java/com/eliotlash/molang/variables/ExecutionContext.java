@@ -63,7 +63,8 @@ public class ExecutionContext {
         registerFunction("math", new Random("random"));
 
         registerFunction("system", new Print("print"));
-        registerFunction("strings", new StrEquals("equals"));
+        registerFunction("string", new StrEquals("equals"));
+        registerFunction("string", new StrEquals("equalsIgnoreCase"));
     }
 
     public Evaluator getEvaluator() {

@@ -14,6 +14,8 @@ public class ParserTest extends TestBase {
 	void testString() {
 		assertEquals(new Expr.Str("minecraft:pig"), e("'minecraft:pig'"));
 		assertEquals(new Expr.Str("hello, world. this is a string"), e("'hello, world. this is a string'"));
+		// empty strings work
+		assertEquals(new Expr.Str(""), e("''"));
 	}
 	@Test
 	void testStmt() {
