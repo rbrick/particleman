@@ -73,7 +73,11 @@ public class Lexer {
 		var token = tryOperator(c);
 		if (token != null) {
 			if (token == TokenType.QUOTE) {
-				eatString();
+				try {
+					eatString();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 				return;
 			}
 
@@ -86,9 +90,35 @@ public class Lexer {
 	}
 
 
-	private void eatString() {
-		while (advance() != '\'') {}
-		tokens.add(new Token(TokenType.STRING, input.substring(this.startPos+1, nextPos-1)));
+	private void eatString() throws Exception {
+		// skip over the current character ('), we don't want that to part of the string.
+		// The lexer seems to always include the startPos.
+		// Other option would be to make it like a state machine where if it comes across a quote
+		// it'll consume everything within it until it reaches another quote.
+		// But that would be behavior specific to Strings, and doesn't fit with
+		// current behavior for numerals.
+		startPos++;
+
+		// while we have a next character, and the next character does not equal "'"
+		// we are safe to advance.
+		while (hasNextChar() && peek() != '\'') {
+			advance();
+		}
+
+		// Early fail for unclosed strings
+		if (!hasNextChar() || peek() != '\'') {
+			System.out.println(peek());
+			// We want to skip over the closing quote.
+			// We don't however want to include it in the substring, so we skip over, after we set token.
+			// However, if we find that there isn't another quote, we mark it as an unclosed string
+			throw new Exception("string not closed");
+		}
+
+		setToken(TokenType.STRING);
+
+
+		// Skip over the next quote so the lexer doesn't pick it up as a new string.
+		advance();
 	}
 
 	private void eatWhitespace() {

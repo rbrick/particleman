@@ -16,6 +16,21 @@ public class ParserTest extends TestBase {
 		assertEquals(new Expr.Str("hello, world. this is a string"), e("'hello, world. this is a string'"));
 		// empty strings work
 		assertEquals(new Expr.Str(""), e("''"));
+
+		assertThrows(Exception.class, () -> {
+			e("'this string is not closed              ");
+		});
+
+		assertThrows(Exception.class, () -> {
+			e("'''");
+		});
+
+
+		assertThrows(Exception.class, () -> {
+			e("'");
+		});
+
+		assertEquals(new Expr.Str("this string is was closed              "), e("'this string is was closed              '"));
 	}
 	@Test
 	void testStmt() {
@@ -160,8 +175,13 @@ public class ParserTest extends TestBase {
 						op(c(20), Operator.MUL, c(40)))
 		), e("q.count(20, 40, 20 * 40)"));
 
-		assertEquals(new Expr.Call(v("q"), "str", List.of(new Expr.Str("hello, world"), new Expr.Str("minecraft:pig"))),
-				e("q.str('hello, world', 'minecraft:pig')"));
+		Expr.Call stringCall = new Expr.Call(v("q"), "str", List.of(new Expr.Str("hello, world"), new Expr.Str("minecraft:pig")));
+
+		assertEquals(stringCall, e("q.str('hello, world', 'minecraft:pig')"));
+
+		assertThrows(Exception.class, () -> {
+			e("q.str('hello, world', 'minecraft:pig)");
+		});
 	}
 
 	@Test

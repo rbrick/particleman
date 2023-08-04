@@ -15,6 +15,7 @@ public class LexerTest {
 
 	@Test
 	void testString() {
+		assertTokens("''", STRING);
 		assertTokens("'minecraft:pig'", STRING);
 		assertTokens("'something long arbitrary and unlikely to be used'", STRING);
 		assertTokens("'anything goes really'", STRING);
