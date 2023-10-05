@@ -158,6 +158,16 @@ public interface Expr {
     }
 
     /**
+     * condition ? ifTrue
+     */
+    record Conditional(Expr condition, Expr ifTrue) implements Expr {
+        @Override
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitConditional(this);
+        }
+    }
+
+    /**
      * condition ? ifTrue : ifFalse
      */
     record Ternary(Expr condition, Expr ifTrue, Expr ifFalse) implements Expr {
@@ -227,6 +237,8 @@ public interface Expr {
         R visitNegate(Negate expr);
 
         R visitNot(Not expr);
+
+        R visitConditional(Conditional expr);
 
         R visitTernary(Ternary expr);
 

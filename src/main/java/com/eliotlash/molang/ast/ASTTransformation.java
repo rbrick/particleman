@@ -84,6 +84,11 @@ public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt>
 	}
 
 	@Override
+	public Expr visitConditional(Expr.Conditional expr) {
+		return new Expr.Conditional(visit(expr.condition()), visit(expr.ifTrue()));
+	}
+
+	@Override
 	public Expr visitTernary(Expr.Ternary expr) {
 		return new Expr.Ternary(visit(expr.condition()), visit(expr.ifTrue()), visit(expr.ifFalse()));
 	}
