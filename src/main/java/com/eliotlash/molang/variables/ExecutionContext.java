@@ -13,8 +13,7 @@ import com.eliotlash.molang.functions.rounding.Ceil;
 import com.eliotlash.molang.functions.rounding.Floor;
 import com.eliotlash.molang.functions.rounding.Round;
 import com.eliotlash.molang.functions.rounding.Trunc;
-import com.eliotlash.molang.functions.utility.Lerp;
-import com.eliotlash.molang.functions.utility.LerpRotate;
+import com.eliotlash.molang.functions.utility.*;
 import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.utils.MolangUtils;
 import it.unimi.dsi.fastutil.Pair;
@@ -63,6 +62,8 @@ public class ExecutionContext {
         registerFunction("math", new Lerp("lerp"));
         registerFunction("math", new LerpRotate("lerprotate"));
         registerFunction("math", new Random("random"));
+        registerFunction("math", new DiceRoll("dice_roll"));
+        registerFunction("math", new DiceRollInteger("dice_roll_integer"));
     }
 
     public Evaluator getEvaluator() {
