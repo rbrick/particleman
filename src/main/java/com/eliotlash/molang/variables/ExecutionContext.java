@@ -62,6 +62,7 @@ public class ExecutionContext {
         registerFunction("math", new Lerp("lerp"));
         registerFunction("math", new LerpRotate("lerprotate"));
         registerFunction("math", new Random("random"));
+        registerFunction("math", new RandomInteger("random_integer"));
         registerFunction("math", new DiceRoll("dice_roll"));
         registerFunction("math", new DiceRollInteger("dice_roll_integer"));
     }
