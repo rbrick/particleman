@@ -61,6 +61,7 @@ public class ExecutionContext {
         registerFunction("math", new Trunc("trunc"));
         registerFunction("math", new Lerp("lerp"));
         registerFunction("math", new LerpRotate("lerprotate"));
+        registerFunction("math", new MinAngle("min_angle"));
         registerFunction("math", new Random("random"));
         registerFunction("math", new RandomInteger("random_integer"));
         registerFunction("math", new DiceRoll("dice_roll"));

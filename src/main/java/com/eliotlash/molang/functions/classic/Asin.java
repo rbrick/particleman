@@ -21,7 +21,7 @@ public class Asin extends Function {
 	@Override
 	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
 		double a = this.evaluateArgument(arguments, ctx, 0);
-		if (a > 1) {
+		if (Math.abs(a) > 1) {
 			return 0;
 		}
 		return Math.asin(a);
