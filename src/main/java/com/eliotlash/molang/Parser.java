@@ -300,9 +300,12 @@ public class Parser {
         Expr access = access();
         if (match(QUESTION)) {
             Expr left = expression();
-            consume(COLON, "Expected ':' after ternary");
-            Expr right = expression();
-            return new Expr.Ternary(access, left, right);
+            if (match(COLON)) {
+                Expr right = expression();
+                return new Expr.Ternary(access, left, right);
+            } else {
+                return new Expr.Conditional(access, left);
+            }
         }
         if (match(ARROW)) {
             Expr right = expression();
