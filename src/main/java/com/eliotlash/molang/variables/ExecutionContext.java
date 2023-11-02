@@ -13,8 +13,7 @@ import com.eliotlash.molang.functions.rounding.Ceil;
 import com.eliotlash.molang.functions.rounding.Floor;
 import com.eliotlash.molang.functions.rounding.Round;
 import com.eliotlash.molang.functions.rounding.Trunc;
-import com.eliotlash.molang.functions.utility.Lerp;
-import com.eliotlash.molang.functions.utility.LerpRotate;
+import com.eliotlash.molang.functions.utility.*;
 import com.eliotlash.molang.functions.utility.Random;
 import com.eliotlash.molang.utils.MolangUtils;
 import it.unimi.dsi.fastutil.Pair;
@@ -44,6 +43,10 @@ public class ExecutionContext {
         registerFunction("math", new Cos("cosradians"));
         registerFunction("math", new SinDegrees("sin"));
         registerFunction("math", new Sin("sinradians"));
+        registerFunction("math", new Asin("asin"));
+        registerFunction("math", new Acos("acos"));
+        registerFunction("math", new Atan("atan"));
+        registerFunction("math", new Atan2("atan2"));
         registerFunction("math", new Exp("exp"));
         registerFunction("math", new Ln("ln"));
         registerFunction("math", new Mod("mod"));
@@ -58,7 +61,11 @@ public class ExecutionContext {
         registerFunction("math", new Trunc("trunc"));
         registerFunction("math", new Lerp("lerp"));
         registerFunction("math", new LerpRotate("lerprotate"));
+        registerFunction("math", new MinAngle("min_angle"));
         registerFunction("math", new Random("random"));
+        registerFunction("math", new RandomInteger("random_integer"));
+        registerFunction("math", new DiceRoll("dice_roll"));
+        registerFunction("math", new DiceRollInteger("dice_roll_integer"));
     }
 
     public Evaluator getEvaluator() {

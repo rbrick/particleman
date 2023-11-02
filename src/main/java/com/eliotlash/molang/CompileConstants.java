@@ -14,6 +14,8 @@ public class CompileConstants {
 
 	public CompileConstants() {
 		this.registerConstant("PI", Math.PI);
+		// Bedrock Parity
+		this.registerConstant("math.pi", Math.PI);
 		this.registerConstant("E", Math.E);
 	}
 
