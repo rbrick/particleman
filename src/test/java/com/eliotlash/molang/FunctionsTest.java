@@ -3,6 +3,7 @@ package com.eliotlash.molang;
 import com.eliotlash.molang.ast.Evaluator;
 import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.ast.Transformations;
+import com.eliotlash.molang.variables.ExecutionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,7 @@ class FunctionsTest {
     @BeforeEach
     private void setupEval() {
         evaluator = new Evaluator();
+        evaluator.setExecutionContext(new ExecutionContext(evaluator));
     }
 
     @Test
