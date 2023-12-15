@@ -4,7 +4,7 @@ import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.variables.ExecutionContext;
 
 public abstract class Function {
-    protected String name;
+    private final String name;
 
     public Function(String name) {
         this.name = name;
