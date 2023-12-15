@@ -12,6 +12,10 @@ public class DiceRoll extends Function {
 		super(name);
 	}
 
+	public boolean isConstant() {
+		return false;
+	}
+
 	@Override
 	public int getRequiredArguments() {
 		return 3;

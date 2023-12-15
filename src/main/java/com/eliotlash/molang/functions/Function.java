@@ -18,6 +18,14 @@ public abstract class Function {
     }
 
     /**
+     * If all arguments passed are constant,
+     * will this function always give the same result without the need of a context.
+     */
+    public boolean isConstant() {
+        return true;
+    }
+
+    /**
      * Get minimum count of arguments this function needs
      */
     public int getRequiredArguments() {

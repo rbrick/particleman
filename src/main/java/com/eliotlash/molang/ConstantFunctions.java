@@ -37,6 +37,8 @@ public class ConstantFunctions {
     }
 
     public static void addConstantFunction(FunctionDefinition functionDefinition) {
-        CONSTANT_FUNCTIONS.add(functionDefinition);
+        if (!CONSTANT_FUNCTIONS.contains(functionDefinition)) {
+            CONSTANT_FUNCTIONS.add(functionDefinition);
+        }
     }
 }

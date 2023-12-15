@@ -101,15 +101,18 @@ public class ExecutionContext {
     }
 
     public void registerFunction(String target, Function function) {
-        functionMap.putIfAbsent(asFunctionDefinition(target, function), function);
+        registerFunction(asFunctionDefinition(target, function), function);
     }
 
     public void registerFunction(FunctionDefinition definition, Function function) {
         functionMap.putIfAbsent(definition, function);
+        if (function.isConstant()) {
+            ConstantFunctions.addConstantFunction(definition);
+        }
     }
 
     public void registerFunctions(Map<FunctionDefinition, Function> map) {
-        functionMap.putAll(map);
+        map.forEach(this::registerFunction);
     }
 
     public Function getFunction(FunctionDefinition definition) {
@@ -121,16 +124,7 @@ public class ExecutionContext {
     }
 
     private static void addFunction(Map<FunctionDefinition, Function> map, String target, Function func) {
-        addFunction(map, target, func, true);
-    }
-
-    private static void addFunction(Map<FunctionDefinition, Function> map, String target,
-                                    Function func, boolean constant) {
-        FunctionDefinition functionDefinition = asFunctionDefinition(target, func);
-        map.put(functionDefinition, func);
-        if (constant) {
-            ConstantFunctions.addConstantFunction(functionDefinition);
-        }
+        map.put(asFunctionDefinition(target, func), func);
     }
     
     static {
@@ -159,10 +153,10 @@ public class ExecutionContext {
         addFunction(map, "math", new Lerp("lerp"));
         addFunction(map, "math", new LerpRotate("lerprotate"));
         addFunction(map, "math", new MinAngle("min_angle"));
-        addFunction(map, "math", new Random("random"), false);
-        addFunction(map, "math", new RandomInteger("random_integer"), false);
-        addFunction(map, "math", new DiceRoll("dice_roll"), false);
-        addFunction(map, "math", new DiceRollInteger("dice_roll_integer"), false);
+        addFunction(map, "math", new Random("random"));
+        addFunction(map, "math", new RandomInteger("random_integer"));
+        addFunction(map, "math", new DiceRoll("dice_roll"));
+        addFunction(map, "math", new DiceRollInteger("dice_roll_integer"));
         MATH_FUNCTIONS = Map.copyOf(map);
     }
 }
