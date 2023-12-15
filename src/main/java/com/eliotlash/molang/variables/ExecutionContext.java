@@ -26,14 +26,14 @@ public class ExecutionContext {
     
     private static final Map<FunctionDefinition, Function> MATH_FUNCTIONS;
     
-    private Evaluator evaluator;
+    private final Evaluator evaluator;
 
     public final Stack<Expr.Access> contextStack = new Stack<>();
     public final Map<VariableFlavor, List<Pair<RuntimeVariable, Expr.Access>>> flavorCache = new HashMap<>();
     public final Object2DoubleMap<Assignable> assignableMap = new Object2DoubleOpenHashMap<>();
     public Object2DoubleMap<Assignable> functionScopedArguments = new Object2DoubleOpenHashMap<>();
 
-    private Map<FunctionDefinition, Function> functionMap = new HashMap<>();
+    private final Map<FunctionDefinition, Function> functionMap = new HashMap<>();
     private final Object2DoubleMap<RuntimeVariable> variableMap = new Object2DoubleOpenHashMap<>();
     private final Map<String, RuntimeVariable> variableCache = new HashMap<>();
     private final Object2DoubleMap<Expr.Struct> structMap = new Object2DoubleOpenHashMap<>();
