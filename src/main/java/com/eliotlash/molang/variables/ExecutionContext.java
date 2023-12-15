@@ -1,5 +1,6 @@
 package com.eliotlash.molang.variables;
 
+import com.eliotlash.molang.ConstantFunctions;
 import com.eliotlash.molang.ast.Assignable;
 import com.eliotlash.molang.ast.Evaluator;
 import com.eliotlash.molang.ast.Expr;
@@ -120,7 +121,16 @@ public class ExecutionContext {
     }
 
     private static void addFunction(Map<FunctionDefinition, Function> map, String target, Function func) {
-        map.put(asFunctionDefinition(target, func), func);
+        addFunction(map, target, func, true);
+    }
+
+    private static void addFunction(Map<FunctionDefinition, Function> map, String target,
+                                    Function func, boolean constant) {
+        FunctionDefinition functionDefinition = asFunctionDefinition(target, func);
+        map.put(functionDefinition, func);
+        if (constant) {
+            ConstantFunctions.addConstantFunction(functionDefinition);
+        }
     }
     
     static {
@@ -149,10 +159,10 @@ public class ExecutionContext {
         addFunction(map, "math", new Lerp("lerp"));
         addFunction(map, "math", new LerpRotate("lerprotate"));
         addFunction(map, "math", new MinAngle("min_angle"));
-        addFunction(map, "math", new Random("random"));
-        addFunction(map, "math", new RandomInteger("random_integer"));
-        addFunction(map, "math", new DiceRoll("dice_roll"));
-        addFunction(map, "math", new DiceRollInteger("dice_roll_integer"));
+        addFunction(map, "math", new Random("random"), false);
+        addFunction(map, "math", new RandomInteger("random_integer"), false);
+        addFunction(map, "math", new DiceRoll("dice_roll"), false);
+        addFunction(map, "math", new DiceRollInteger("dice_roll_integer"), false);
         MATH_FUNCTIONS = Map.copyOf(map);
     }
 }
