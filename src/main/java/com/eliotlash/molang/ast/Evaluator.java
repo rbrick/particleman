@@ -193,6 +193,13 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Double visitConditional(Expr.Conditional expr) {
+        double result = evaluate(expr.condition());
+        if (result == 0) return 0.0;
+        return evaluate(expr.ifTrue());
+    }
+
+    @Override
     public Double visitTernary(Expr.Ternary expr) {
         Expr branch = evaluate(expr.condition()) == 0 ? expr.ifFalse() : expr.ifTrue();
         return evaluate(branch);

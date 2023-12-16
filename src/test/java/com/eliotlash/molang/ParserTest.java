@@ -70,6 +70,31 @@ public class ParserTest extends TestBase {
 	}
 
 	@Test
+	void testConditionals() {
+		// Binary Conditional
+		assertEquals(new Expr.Conditional(c(0), c(20)), e("0 ? 20"));
+		assertEquals(
+				new Expr.Conditional(c(0), paren(new Expr.Conditional(c(20), c(30)))),
+				e("0 ? (20 ? 30)")
+		);
+		// Ternary Conditional
+		assertEquals(new Expr.Ternary(c(0), c(10), c(20)), e("0 ? 10 : 20"));
+		assertEquals(
+				new Expr.Ternary(c(0), paren(new Expr.Ternary(c(10), c(20), c(30))), c(20)),
+				e("0 ? (10 ? 20 : 30) : 20")
+		);
+		// Combinations
+		assertEquals(
+				new Expr.Conditional(c(0), new Expr.Ternary(c(10), c(20), c(30))),
+				e("0 ? 10 ? 20 : 30")
+		);
+		assertEquals(
+				new Expr.Ternary(c(0), c(10), new Expr.Conditional(c(20), c(30))),
+				e("0 ? 10 : 20 ? 30")
+		);
+	}
+
+	@Test
 	void testMath() {
 		Expr.Constant twenty = c(20);
 		assertEquals(op(twenty, Operator.MUL, paren(op(twenty, Operator.ADD, twenty))), e("20 * (20 + 20)"));

@@ -88,6 +88,12 @@ class EvaluatorTest extends TestBase {
 	}
 
 	@Test
+	void visitConditional() {
+		assertEquals(10, eval.visitConditional(new Expr.Conditional(c(1), c(10))));
+		assertEquals(0, eval.visitConditional(new Expr.Conditional(c(0), c(10))));
+	}
+
+	@Test
 	void visitTernary() {
 		assertEquals(10, eval.visitTernary(new Expr.Ternary(c(1), c(10), c(30))));
 		assertEquals(30, eval.visitTernary(new Expr.Ternary(c(0), c(10), c(30))));
