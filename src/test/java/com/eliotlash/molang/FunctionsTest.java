@@ -92,8 +92,7 @@ class FunctionsTest {
         assertEquals(10.0, evaluate("math.abs(-10)"));
         assertEquals(10.0, evaluate("math.abs(10)"));
 
-        // ass
-        assertEquals(Math.E, evaluate("math.exp(1)"), 0.00001);
+        assertEquals(Math.exp(1), evaluate("math.exp(1)"));
         assertEquals(0.0, evaluate("math.ln(1)"));
         assertEquals(2.0, evaluate("math.sqrt(4)"));
         assertEquals(2.0, evaluate("math.mod(5, 3)"));
