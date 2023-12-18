@@ -14,6 +14,7 @@ import com.eliotlash.molang.functions.rounding.Ceil;
 import com.eliotlash.molang.functions.rounding.Floor;
 import com.eliotlash.molang.functions.rounding.Round;
 import com.eliotlash.molang.functions.rounding.Trunc;
+import com.eliotlash.molang.functions.strings.Length;
 import com.eliotlash.molang.functions.strings.Print;
 import com.eliotlash.molang.functions.strings.StrEquals;
 import com.eliotlash.molang.functions.strings.StrEqualsIgnoreCase;
@@ -164,6 +165,7 @@ public class ExecutionContext {
         addFunction(map, "system", new Print("print"));
         addFunction(map, "string", new StrEquals("equals"));
         addFunction(map, "string", new StrEqualsIgnoreCase("equalsIgnoreCase"));
+        addFunction(map, "string", new Length("length"));
         BUILTIN_FUNCTIONS = Map.copyOf(map);
     }
 }
