@@ -3,7 +3,7 @@ package com.eliotlash.molang;
 import com.eliotlash.molang.ast.Evaluator;
 import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.ast.Transformations;
-import com.eliotlash.molang.utils.MathUtils;
+import com.eliotlash.molang.variables.ExecutionContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +16,7 @@ class FunctionsTest {
     @BeforeEach
     private void setupEval() {
         evaluator = new Evaluator();
+        evaluator.setExecutionContext(new ExecutionContext(evaluator));
     }
 
     @Test
@@ -23,7 +24,7 @@ class FunctionsTest {
         assertConstant("PI");
         assertConstant("E");
         assertConstant("500");
-/*        assertConstant("math.sqrt(2)");
+        assertConstant("math.sqrt(2)");
         assertConstant("math.floor(2.5)");
         assertConstant("math.round(2.5)");
         assertConstant("math.ceil(2.5)");
@@ -37,7 +38,22 @@ class FunctionsTest {
         assertConstant("math.exp(5)");
         assertConstant("math.ln(E)");
         assertConstant("math.mod(10, 3)");
-        assertConstant("math.pow(20, 2)");*/
+        assertConstant("math.pow(20, 2)");
+        assertNotConstant("math.sqrt(v.val)");
+        assertNotConstant("math.floor(v.val)");
+        assertNotConstant("math.round(v.val)");
+        assertNotConstant("math.ceil(v.val)");
+        assertNotConstant("math.trunc(v.val)");
+        assertNotConstant("math.clamp(10, v.val, 1)");
+        assertNotConstant("math.max(1, v.val)");
+        assertNotConstant("math.min(v.val, 2)");
+        assertNotConstant("math.abs(-v.val)");
+        assertNotConstant("math.cos(v.val)");
+        assertNotConstant("math.sin(v.val)");
+        assertNotConstant("math.exp(v.val)");
+        assertNotConstant("math.ln(v.val)");
+        assertNotConstant("math.mod(10, v.val)");
+        assertNotConstant("math.pow(v.val, 2)");
     }
 
     @Test

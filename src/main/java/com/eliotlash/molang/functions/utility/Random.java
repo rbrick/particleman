@@ -13,6 +13,10 @@ public class Random extends Function {
 		this.random = new java.util.Random();
 	}
 
+	public boolean isConstant() {
+		return false;
+	}
+
 	public double _evaluate(Expr[] arguments, ExecutionContext ctx) {
 		double random = 0;
 

@@ -1,5 +1,7 @@
 package com.eliotlash.molang.ast;
 
+import com.eliotlash.molang.ConstantFunctions;
+
 public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt> {
 
 	@Override
@@ -55,7 +57,11 @@ public class ASTTransformation implements Expr.Visitor<Expr>, Stmt.Visitor<Stmt>
 
 	@Override
 	public Expr visitCall(Expr.Call expr) {
-		return new Expr.Call((Expr.Variable) visit(expr.target()), expr.member(), expr.arguments().stream().map(this::visit).toList());
+		Expr.Call call = new Expr.Call((Expr.Variable) visit(expr.target()), expr.member(), expr.arguments().stream().map(this::visit).toList());
+		if (ConstantFunctions.isConstant(call)) {
+			return new Expr.Constant(Evaluator.getGlobalEvaluator().visitCall(call));
+		}
+		return call;
 	}
 
 	@Override
