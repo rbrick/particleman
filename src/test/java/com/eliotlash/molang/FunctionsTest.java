@@ -115,6 +115,9 @@ class FunctionsTest {
         assertEquals(100.0, evaluate("math.pow(10, 2)"));
 
         assertEquals(1.0, evaluate("!string.equals('minecraft:pig', 'minecraft:cow')"));
+        assertEquals(1.0, evaluate("string.equals('minecraft:cow', 'minecraft:cow')"));
+        assertEquals(0.0, evaluate("string.equals('COW', 'cow')"));
+        assertEquals(1.0, evaluate("string.equalsIgnoreCase('COW', 'cow')"));
     }
 
     private double evaluate(String expression) throws Exception {

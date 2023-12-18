@@ -16,6 +16,7 @@ import com.eliotlash.molang.functions.rounding.Round;
 import com.eliotlash.molang.functions.rounding.Trunc;
 import com.eliotlash.molang.functions.strings.Print;
 import com.eliotlash.molang.functions.strings.StrEquals;
+import com.eliotlash.molang.functions.strings.StrEqualsIgnoreCase;
 import com.eliotlash.molang.functions.utility.*;
 
 import com.eliotlash.molang.functions.utility.Random;
@@ -162,7 +163,7 @@ public class ExecutionContext {
         addFunction(map, "math", new DiceRollInteger("dice_roll_integer"));
         addFunction(map, "system", new Print("print"));
         addFunction(map, "string", new StrEquals("equals"));
-        addFunction(map, "string", new StrEquals("equalsIgnoreCase"));
+        addFunction(map, "string", new StrEqualsIgnoreCase("equalsIgnoreCase"));
         BUILTIN_FUNCTIONS = Map.copyOf(map);
     }
 }
