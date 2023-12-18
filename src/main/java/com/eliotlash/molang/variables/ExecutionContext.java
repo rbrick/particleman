@@ -28,7 +28,7 @@ import java.util.*;
 
 public class ExecutionContext {
 
-    private static final Map<FunctionDefinition, Function> MATH_FUNCTIONS;
+    private static final Map<FunctionDefinition, Function> BUILTIN_FUNCTIONS;
 
     private final Evaluator evaluator;
 
@@ -45,10 +45,7 @@ public class ExecutionContext {
     public ExecutionContext(Evaluator evaluator) {
         this.evaluator = evaluator;
 
-        registerFunctions(MATH_FUNCTIONS);
-        registerFunction("system", new Print("print"));
-        registerFunction("string", new StrEquals("equals"));
-        registerFunction("string", new StrEquals("equalsIgnoreCase"));
+        registerFunctions(BUILTIN_FUNCTIONS);
     }
 
     public Evaluator getEvaluator() {
@@ -163,6 +160,9 @@ public class ExecutionContext {
         addFunction(map, "math", new RandomInteger("random_integer"));
         addFunction(map, "math", new DiceRoll("dice_roll"));
         addFunction(map, "math", new DiceRollInteger("dice_roll_integer"));
-        MATH_FUNCTIONS = Map.copyOf(map);
+        addFunction(map, "system", new Print("print"));
+        addFunction(map, "string", new StrEquals("equals"));
+        addFunction(map, "string", new StrEquals("equalsIgnoreCase"));
+        BUILTIN_FUNCTIONS = Map.copyOf(map);
     }
 }
