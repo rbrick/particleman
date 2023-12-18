@@ -21,6 +21,7 @@ class EvaluatorTest extends TestBase {
 	@BeforeEach
 	void setUp() throws Exception {
 		eval = new Evaluator();
+		eval.setExecutionContext(new ExecutionContext(eval));
 	}
 
 	@Test
