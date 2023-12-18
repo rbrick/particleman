@@ -271,5 +271,6 @@ class EvaluatorTest extends TestBase {
 		assertEquals(1.0, eval.evaluate(parseE("'minecraft:pig' != 'minecraft:cow'")));
 		assertEquals(0.0, eval.evaluate(parseE("'minecraft:pig' == 'minecraft:cow'")));
 		assertEquals(1.0, eval.evaluate(parseE("'minecraft:pig' != ''")));
+		assertEquals(1.0, eval.evaluate(parseE("'' == ''")));
 	}
 }
