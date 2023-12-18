@@ -4,7 +4,7 @@ import com.eliotlash.molang.ast.Expr;
 import com.eliotlash.molang.variables.ExecutionContext;
 
 public abstract class Function {
-    protected String name;
+    private final String name;
 
     public Function(String name) {
         this.name = name;
@@ -15,6 +15,14 @@ public abstract class Function {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * If all arguments passed are constant,
+     * will this function always give the same result without the need of a context.
+     */
+    public boolean isConstant() {
+        return true;
     }
 
     /**

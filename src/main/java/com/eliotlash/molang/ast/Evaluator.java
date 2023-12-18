@@ -1,6 +1,5 @@
 package com.eliotlash.molang.ast;
 
-import com.eliotlash.molang.ParseException;
 import com.eliotlash.molang.functions.Function;
 import com.eliotlash.molang.functions.FunctionDefinition;
 import com.eliotlash.molang.utils.MolangUtils;
@@ -22,7 +21,7 @@ public class Evaluator implements Expr.Visitor<Double>, Stmt.Visitor<Void> {
         globalEvaluator.setExecutionContext(globalContext);
     }
 
-    private ExecutionContext context = new ExecutionContext(this);
+    private ExecutionContext context;
 
     public static Evaluator getGlobalEvaluator() {
         return globalEvaluator;

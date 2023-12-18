@@ -17,7 +17,7 @@ public class Parser {
 
     private final List<Token> input;
     private int current = 0;
-    private CompileConstants constants = new CompileConstants();
+    private final CompileConstants constants = new CompileConstants();
 
     public Parser(List<Token> input) {
         this.input = input;
@@ -97,8 +97,6 @@ public class Parser {
     }
 
     private Stmt loopStatement() {
-        var loop = previous();
-
         consume(OPEN_PAREN, "Expect '(' for loop args.");
 
         List<Expr> arguments = arguments();
@@ -172,8 +170,6 @@ public class Parser {
     }
 
     private Stmt returnStatement() {
-        var returnTok = previous();
-
         Expr value = expression();
 
         consume(SEMICOLON, "Expect ';' after return statement.");
@@ -205,7 +201,6 @@ public class Parser {
         var expr = conjunction();
 
         while (match(OR)) {
-            Token operator = previous();
             Expr right = conjunction();
             expr = new Expr.BinOp(Operator.OR, expr, right);
         }
@@ -216,7 +211,6 @@ public class Parser {
         var expr = equality();
 
         while (match(AND)) {
-            Token operator = previous();
             Expr right = equality();
             expr = new Expr.BinOp(Operator.AND, expr, right);
         }
@@ -251,7 +245,6 @@ public class Parser {
         var expr = term();
 
         while (match(COALESCE)) {
-            Token coalesce = previous();
             Expr right = term();
             expr = new Expr.Coalesce(expr, right);
         }
